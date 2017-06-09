@@ -1,0 +1,119 @@
+
+= Heat Transfer: Swift
+
+This example shows how to run the heat transfer ADIOS pipeline from Swift.
+
+== Setup
+
+. http://swift-lang.github.io/swift-t/guide.html#_installation[Install Swift/T]
++
+NOTE: see <<spack,below>> to build Swift-T combined with Spack.
+
+. Install the https://bitbucket.org/jmjwozniak/mpix_launch_swift[MPIX_Launch library]
++
+----
+git clone --recursive git@bitbucket.org:jmjwozniak/mpix_launch_swift.git
+cd mpix_launch_swift/mpix_launch
+make
+cd ../src
+./build.sh
+----
+
+. Install http://www.cc.gatech.edu/systems/projects/EVPath/[EVPath] (for Flexpath)
++
+----
+wget http://www.cc.gatech.edu/systems/projects/EVPath/chaos_bootstrap.pl
+perl ./chaos_bootstrap.pl -i
+----
++
+Then, edit `chaos_build_config` to change install location, etc.
++
+----
+mkdir -p /dir/to/install
+perl ./chaos_build.pl
+----
+NOTE: cmake is required (version > 2.8.3).
+
+. Install ADIOS
++
+----
+wget http://users.nccs.gov/~pnorbert/adios-1.11.0.tar.gz
+tar xfz adios-1.11.0.tar.gz
+cd adios-1.11.0
+./configure --prefix=... --with-flexpath=...
+make
+make install
+----
+
+. Build the heat transfer simulator and stager
++
+----
+make
+cd stage_write
+make
+----
+
+. Run the workflow
++
+Enable the `FLEXPATH` method in +heat_transfer.xml+ (near end of file). Then, type
++
+----
+./run-workflow.sh 20
+----
+where 20 is the number of MPI processes.   As shown in the workflow, 12 processes are used for the simulation and 2 are used for the stager.
+
+== Run with compression
+
+To be added
+
+[[spack]]
+== Swift-T build with https://github.com/LLNL/spack[Spack]
+
+We can use Spack to build required libraries and build Swift-T with them.
+
+. https://spack.readthedocs.io/en/latest/getting_started.html[Install Spack]
++
+To use with Environment Modules, see https://spack.readthedocs.io/en/latest/module_file_support.html[here].
+
+. Build required libraries 
++
+----
+spack install mpich tcl swig zsh
+----
+
+. Build JDK and Ant
++
+To build JDK and Ant with Spack, we need extra steps.
+Bascially, we need to follow instructions 
+http://spack.readthedocs.io/en/latest/basic_usage.html#non-downloadable-tarballs[here].
++
+Here is a short summary: Go to Java download website and download JDK (e.g., `jdk-8u131-linux-x64.tar.gz`). Then, do as follows:
++
+----
+mkdir -p $HOME/.spack/manual_mirror/jdk
+mv jdk-8u131-linux-x64.tar.gz $HOME/.spack/manual_mirror/jdk/jdk-8u131.tar.gz
+spack mirror add manual file://$HOME/.spack/manual_mirror
+spack install jdk@8u131 ant ^jdk@8u131
+----
+
+. Build Swift-T
++
+----
+spack load mpich tcl swig zsh jdk ant
+git clone git@github.com:swift-lang/swift-t.git
+cd swift-t
+./dev/build/init-settings.sh
+----
++
+Edit `dev/build/swift-t-settings.sh`. Then, build:
++
+----
+$ dev/build/build-all.sh
+----
++
+After sucessful building, add PATH as follows:
++
+----
+$ export PATH=${PATH}:/path/to/swift-t-install/turbine/bin
+$ export PATH=${PATH}:/path/to/swift-t-install/stc/bin
+----
