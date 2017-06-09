@@ -40,7 +40,7 @@ NOTE: cmake is required (version > 2.8.3).
 wget http://users.nccs.gov/~pnorbert/adios-1.11.0.tar.gz
 tar xfz adios-1.11.0.tar.gz
 cd adios-1.11.0
-./configure --prefix=... --with-flexpath=...
+./configure --prefix=/dir/to/install --with-flexpath=/dir/to/evpath
 make
 make install
 ----
@@ -52,6 +52,7 @@ make
 cd stage_write
 make
 ----
+NOTE: Adios's bin directory should be in PATH env.
 
 . Run the workflow
 +
