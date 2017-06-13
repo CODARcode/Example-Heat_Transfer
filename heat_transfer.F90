@@ -101,7 +101,9 @@ program heat_transfer
     T = 0.0
     dT = 0.0
 
+
     ! can we set up T to be a sin wave
+
     call init_T()
 
     curr = 1;
@@ -152,39 +154,37 @@ subroutine heatEdges(curr)
     if (posy==npy-1) T(:,ndy+1,curr) = edgetemp
 
 end subroutine heatEdges
-
-
 !!*********************
 subroutine init_T()
     use heat_vars
     implicit none
     include 'mpif.h'
     integer :: i,j,k
-    real*8  :: x,y,hx,hy
+    real*8  :: x,y
+    real*8  :: r
 
-
-    hx = 2.0 * 4.0*atan(1.0d0)/ndx
-    hy= 2.0 * 4.0*atan(1.0d0)/ndx
+    hx = 2.0 * 4.0*atan(1.0d0)/gndx
+    hy= 2.0 * 4.0*atan(1.0d0)/gndy
+    call random_seed()
 
     do j=1,ndy
-        y = 0.0 + hy*(j-1)
+        y = 0.0 + hy*(j+offy-1)
         do i=1,ndx
-            x = 0.0 + hx*(i-1)
-!            T(i,j,1) = cos(x) - cos(2*x) +cos(3*x) - sin(y) + sin(2*y) -&
-!                       sin(3*y) -cos(4*x) + sin(4*y)
-            T(i,j,1) = cos(8*x) + cos(6*x) - cos(4*x) + cos(2*x) - cos(x) + &
-                       sin(8*y) - sin(6*y) + sin(4*y) - sin(2*y) + sin(y) 
+            x = 0.0 + hx*(i+offx-1)
+            call random_number(r)
+            T(i,j,1) = (1.0-r_param) * (cos(10*x) + cos(8*x) - cos(6*x) + cos(4*x) - r*cos(2*x) + cos(x)) - r_param*(&
+                       sin(9*x) +sin(8*y) - sin(7*y) + sin(4*y) - sin(2*y) + r*sin(y) )
         end do
     end do
 
 end subroutine init_T
-
-
+ 
 !!***************************
 subroutine iterate(curr)
     use heat_vars
     implicit none
     integer, intent(in) :: curr
+    include 'mpif.h'
     integer :: i,j,k,next
     real*8, parameter :: omega = 0.8;
 
@@ -192,8 +192,8 @@ subroutine iterate(curr)
     do j=1,ndy
         do i=1,ndx
             T(i,j,next) = omega/4*(T(i-1,j,curr)+T(i+1,j,curr)+ &
-                T(i,j-1,curr)+T(i,j+1,curr) ) + &
-                (1.0-omega)*T(i,j,curr)
+                T(i,j-1,curr)+T(i,j+1,curr)) + &
+                (1.0-omega)*(T(i,j,curr)+r_param)
             dT(i,j) = T(i,j,next) - T(i,j,curr)
             !if (rank==1) then
             !    print '(i0,",",i0,":(",5f9.3,")")', &
@@ -278,6 +278,7 @@ subroutine usage()
     print *, "ny:     local array size in Y dimension per processor"
     print *, "steps:  the total number of steps to output" 
     print *, "iterations: one step consist of this many iterations"
+    print *, "ensenble_float: A parameter we can vary to vary the results"
 end subroutine usage
 
 !!***************************
@@ -294,7 +295,7 @@ subroutine processArgs()
 #endif
 
     character(len=256) :: npx_str, npy_str, ndx_str, ndy_str
-    character(len=256) :: steps_str,iters_str
+    character(len=256) :: steps_str,iters_str, r_str
     integer :: numargs
 
     !! process arguments
@@ -311,12 +312,14 @@ subroutine processArgs()
     call getarg(5, ndy_str)
     call getarg(6, steps_str)
     call getarg(7, iters_str)
+    call getarg(8, r_str)
     read (npx_str,'(i5)') npx
     read (npy_str,'(i5)') npy
     read (ndx_str,'(i6)') ndx
     read (ndy_str,'(i6)') ndy
     read (steps_str,'(i6)') steps
     read (iters_str,'(i6)') iters
+    read (r_str,'(f8.2)') r_param
 
 end subroutine processArgs
 

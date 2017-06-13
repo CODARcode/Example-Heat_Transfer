@@ -39,6 +39,8 @@ module heat_vars
     real*8 :: start_time, end_time, total_time,gbs,sz
     real*8 :: io_start_time, io_end_time, io_total_time
 
+    real*8 :: hx, hy
+    real*8 :: r_param
 
 end module heat_vars
 
