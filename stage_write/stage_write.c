@@ -72,6 +72,8 @@ void printUsage(char *prgname)
            "    params  Read method parameters (in quotes; comma-separated list)\n"
            "    wmethod ADIOS method to write with\n"
            "    params  Write method parameters (in quotes; comma-separated list)\n"
+           "    names   List of variables to apply transforms(compression) (in quotes; comma-separated list)\n"
+           "    params  Transform parameters (in quotes)\n"
            "    <decomposition>    list of numbers e.g. 32 8 4\n"
            "            Decomposition values in each dimension of an array\n"
            "            The product of these number must be less then the number\n"
@@ -120,6 +122,12 @@ int processArgs(int argc, char ** argv)
         print0 ("ERROR: Only 6 decompositon arguments are supported\n");
         return 1; 
     } 
+
+    // Set default value
+    if (nd == 0) {
+        decomp_values[0] = numproc;
+        nd = 1;
+    }
 
     for (i=nd; i<10; i++) {
         decomp_values[i] = 1;
@@ -188,7 +196,7 @@ int main (int argc, char ** argv)
     print0("Read method parameters  = \"%s\"\n", rmethodparams);
     print0("Write method            = %s\n", wmethodname);
     print0("Write method parameters = \"%s\"\n", wmethodparams);
-    print0("Variable to transform   = %s\n", varnames);
+    print0("Variable to transform   = \"%s\"\n", varnames);
     print0("Transform parameters    = \"%s\"\n", transparams);
     
 
