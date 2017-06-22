@@ -78,7 +78,29 @@ We can use Spack to build required libraries and build Swift-T with them.
 
 . https://spack.readthedocs.io/en/latest/getting_started.html[Install Spack]
 +
-To use with Environment Modules, see https://spack.readthedocs.io/en/latest/module_file_support.html[here].
+To use with Environment Modules, see https://spack.readthedocs.io/en/latest/module_file_support.html[here]. 
+Basically, you need to install env module
++
+----
+yum install environment-modules
+----
+Or, we can use spack too
++
+----
+spack install environment-modules
+----
+and activate it:
++
+----
+TMP=`tempfile`
+echo >$TMP
+MODULE_HOME=`spack location --install-dir environment-modules`
+MODULE_VERSION=`ls -1 $MODULE_HOME/Modules | head -1`
+${MODULE_HOME}/Modules/${MODULE_VERSION}/bin/add.modules <$TMP
+cp .bashrc $TMP
+echo "MODULE_VERSION=${MODULE_VERSION}" > .bashrc
+cat $TMP >>.bashrc
+----
 
 . Build required libraries 
 +
