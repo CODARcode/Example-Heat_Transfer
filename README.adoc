@@ -32,11 +32,11 @@ Then, edit `chaos_build_config` to change install location, etc.
 mkdir -p /dir/to/install
 perl ./chaos_build.pl
 ----
-NOTE: bison, flex, perl and cmake (version > 2.8.3) is required. You may want to install with spack
+NOTE: `bison`, `flex`, `perl` and `cmake` (version > 2.8.3) is required. You can install `perl` and `cmake` with spack.
 +
 ----
-spack install bison flex perl cmake
-spack load bison flex perl cmake
+spack install perl cmake
+spack load perl cmake
 ----
 . Install ADIOS
 +
