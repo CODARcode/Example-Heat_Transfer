@@ -32,8 +32,12 @@ Then, edit `chaos_build_config` to change install location, etc.
 mkdir -p /dir/to/install
 perl ./chaos_build.pl
 ----
-NOTE: perl and cmake (version > 2.8.3) is required.
-
+NOTE: perl and cmake (version > 2.8.3) is required. You may want to install with spack
++
+----
+spack install perl cmake
+spack load perl cmake
+----
 . Install ADIOS
 +
 ----
