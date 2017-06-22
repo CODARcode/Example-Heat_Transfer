@@ -106,7 +106,7 @@ cd swift-t
 ./dev/build/init-settings.sh
 ----
 +
-Edit `dev/build/swift-t-settings.sh`. Then, build:
+Edit `dev/build/swift-t-settings.sh`. At a minimum, set the install directory with SWIFT_T_PREFIX. Then, build:
 +
 ----
 $ dev/build/build-all.sh
