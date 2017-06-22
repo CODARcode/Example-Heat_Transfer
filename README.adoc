@@ -14,7 +14,7 @@ NOTE: see <<spack,below>> to build Swift-T combined with Spack.
 ----
 git clone --recursive https://jongchoi@bitbucket.org/jmjwozniak/mpix_launch_swift.git
 cd mpix_launch_swift/mpix_launch
-make
+make CC=mpicc ENABLE_SHARED=1
 cd ../src
 ./build.sh
 ----
