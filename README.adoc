@@ -115,6 +115,6 @@ $ dev/build/build-all.sh
 After sucessful building, add PATH as follows:
 +
 ----
-$ export PATH=${PATH}:/path/to/swift-t-install/turbine/bin
-$ export PATH=${PATH}:/path/to/swift-t-install/stc/bin
+$ export PATH=/path/to/swift-t-install/turbine/bin:${PATH}
+$ export PATH=/path/to/swift-t-install/stc/bin:${PATH}
 ----
