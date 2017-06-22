@@ -12,7 +12,7 @@ NOTE: see <<spack,below>> to build Swift-T combined with Spack.
 . Install the https://bitbucket.org/jmjwozniak/mpix_launch_swift[MPIX_Launch library]
 +
 ----
-git clone --recursive git@bitbucket.org:jmjwozniak/mpix_launch_swift.git
+git clone --recursive https://jongchoi@bitbucket.org/jmjwozniak/mpix_launch_swift.git
 cd mpix_launch_swift/mpix_launch
 make
 cd ../src
