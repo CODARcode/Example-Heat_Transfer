@@ -56,6 +56,13 @@ cd adios-1.11.0
 make
 make install
 ----
+[NOTE]
+====
+If you have any error related on linking, you need to give additional options with LIBS in configure
+----
+./configure --prefix=/dir/to/install --with-flexpath=/dir/to/evpath LIBS="-lm -lpthread"
+----
+====
 
 . Build the heat transfer simulator and stager
 +
@@ -68,12 +75,24 @@ NOTE: Adios's bin directory should be in PATH env.
 
 . Run the workflow
 +
-Enable the `FLEXPATH` method in +heat_transfer.xml+ (near end of file). Then, type
+Enable the `FLEXPATH` method in +heat_transfer.xml+ (near end of file). 
+Then, type
 +
 ----
 ./run-workflow.sh 20
 ----
 where 20 is the number of MPI processes.   As shown in the workflow, 12 processes are used for the simulation and 2 are used for the stager.
++
+[NOTE]
+====
+1. Check LAUNCH is correct in run-workflow.sh
+2. export LD_LIBRARY_PATH to include evpath library if you need.
+----
+export LD_LIBRARY_PATH=/dir/to/evpath:$LD_LIBRARY_PATH
+----
+====
+
+LAUNCH=$HOME/project/mpix_launch_swift/src
 
 == Run with compression
 
