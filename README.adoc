@@ -92,11 +92,32 @@ export LD_LIBRARY_PATH=/dir/to/evpath:$LD_LIBRARY_PATH
 ----
 ====
 
-LAUNCH=$HOME/project/mpix_launch_swift/src
-
 == Run with compression
 
-To be added
+To perform compression through Adios, we need to provide additional options for `stager`. The additional options are i) the list of variables to compress and ii) the Adios' compression parameters. For an example, the following options can used in "workflow.swift" (line 17). 
+
+----
+arguments2 = split("heat.bp staged.bp FLEXPATH \"\" MPI \"\" \"T,dt\" \"SZ:accuracy=0.001\"", " ");
+----
+
+`stager` will compress `T` and `dT` variables with `SZ` method maintaining absolute errors lower than 0.001 (This is SZ's specific parameters. More details can be found in Adios's manual). 
+
+The following line also work for ZFP:
+----
+arguments2 = split("heat.bp staged.bp FLEXPATH \"\" MPI \"\" \"T,dt\" \"ZFP:accuracy=0.001\"", " ");
+----
+
+
+[NOTE]
+====
+1. To use with SZ, ADIOS needs to be configured and compiled with SZ library (https://collab.cels.anl.gov/display/ESR/SZ). I.e., Adios needs to be configured:
++
+----
+./configure --with-sz=/dir/to/sz ...
+----
+
+2. As of Adios 1.11.0 release, ZFP is inclued in the Adios distribution.
+====
 
 [[spack]]
 == Swift-T build with https://github.com/LLNL/spack[Spack]
