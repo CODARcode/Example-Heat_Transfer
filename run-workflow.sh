@@ -16,5 +16,6 @@ MACHINE=${MACHINE:-}
 
 THIS=$( dirname $0 )
 
+rm -f heat.bp_*_info.txt
 stc -p -u -I $LAUNCH -r $LAUNCH workflow.swift
 turbine -n $PROCS $MACHINE workflow.tic
