@@ -90,7 +90,7 @@ int processArgs(int argc, char ** argv)
 {
     int i, j, nd, prod;
     char *end;
-    if (argc < 5) {
+    if (argc < 7) {
         printUsage (argv[0]);
         return 1;
     }
