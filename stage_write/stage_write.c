@@ -64,7 +64,7 @@ int read_write(int step);
 
 void printUsage(char *prgname)
 {
-    print0("Usage: %s input output rmethod \"params\" wmethod \"params\" <decomposition>\n"
+    print0("Usage: %s input output rmethod \"params\" wmethod \"params\" [names params <decomposition>]\n"
            "    input   Input stream path\n"
            "    output  Output file path\n"
            "    rmethod ADIOS method to read with\n"
