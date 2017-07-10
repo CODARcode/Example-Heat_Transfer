@@ -1,12 +1,12 @@
-CC=mpicc
-FC=mpif90
+CC=tau_cc.sh
+FC=tau_f90.sh
 CFLAGS=-g
 FFLAGS=-g -Wall -fcheck=bounds #-fcheck=array-temps
 
 ## ADIOS_DIR/bin should in PATH env
 ADIOS_DIR=$(shell adios_config -d)
-ADIOS_FINC=$(shell adios_config -c -f)
-ADIOS_FLIB=$(shell adios_config -l -f)
+ADIOS_FINC="$(shell tau_cc.sh -tau:showincludes) $(shell adios_config -c -f)"
+ADIOS_FLIB="$(shell tau_cc.sh -tau:showlibs) $(shell adios_config -l -f)"
 
 default: adios2
 all: default
