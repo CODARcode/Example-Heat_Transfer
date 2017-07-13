@@ -23,7 +23,8 @@ cd stage_write
 make
 ----
 . Add ADIOS bin directory to PATH env
-Explain how to find ADIOS bin directory. ``spack find -p savanna adios'' finds three copies on my machine: adios@develop, savanna@0.5, and savanna@develop. Which?
+.. Determine its location: spack find -p adios
+.. Add to PATH env
 . Run the workflow
 +
 Enable the `FLEXPATH` method in +heat_transfer.xml+ (near end of file). 
