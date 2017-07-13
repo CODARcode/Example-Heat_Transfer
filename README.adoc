@@ -12,8 +12,7 @@ spack load evpath
 spack load adios
 spack load mpich
 ----
-
-. Build the heat transfer simulator and stager 
+2. Build the heat transfer simulator and stager 
 .. Determine the location of the code. (How?)
 .. Edit Makefile to set CC=mpicc and FC=mpif90 
 .. Build heat transfer simulator and stager
@@ -22,11 +21,11 @@ make
 cd stage_write
 make
 ----
-. Add ADIOS bin directory to PATH env
+3. Add ADIOS bin directory to PATH env
 
 Explain how to find ADIOS bin directory. ``spack find -p savanna adios'' finds three copies on my machine: adios@develop, savanna@0.5, and savanna@develop. Which?
 
-. Run the workflow
+4. Run the workflow
 +
 Enable the `FLEXPATH` method in +heat_transfer.xml+ (near end of file). 
 Then, type
