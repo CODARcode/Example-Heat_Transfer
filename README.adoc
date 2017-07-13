@@ -6,7 +6,7 @@ This example shows how to run the heat transfer ADIOS pipeline from Swift.
 
 . We assume that Spack is installed on your system.
 
-. Install Savanna via Spack and then load swift, mpix_launch, evpath, adios, and mpich:
+. Install Savanna via Spack and then load stc, mpix_launch, evpath, adios, mpich, and sz:
 +
  spack install savanna
  spack load stc
@@ -14,6 +14,7 @@ This example shows how to run the heat transfer ADIOS pipeline from Swift.
  spack load evpath
  spack load adios
  spack load mpich
+ spack load sz
 +
 . Swift also needs zsh. It seems that there are two options:
 .. `spack load zsh` (but I didn't try this)
