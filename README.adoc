@@ -3,7 +3,6 @@
 
 This example shows how to run the heat transfer ADIOS pipeline from Swift.
 
-
 . Install savanna via spack and then load swift, mpix_launch, evpath, adios, and mpich
 ----
 spack install savanna
@@ -13,7 +12,6 @@ spack load evpath
 spack load adios
 spack load mpich
 ----
-
 . Build the heat transfer simulator and stager 
 
 .. Determine the location of the code. (How?)
@@ -26,7 +24,6 @@ make
 cd stage_write
 make
 ----
-
 . Add ADIOS bin directory to PATH env
 
 Explain how to find ADIOS bin directory. ``spack find -p savanna adios'' finds three copies on my machine: adios@develop, savanna@0.5, and savanna@develop. Which?
