@@ -64,14 +64,20 @@ If you have any error related on linking, you need to give additional options wi
 ----
 ====
 
-. Build the heat transfer simulator and stager
+. Build the heat transfer simulator and stager 
+<!--- 
+Ian: Add that you need to run "spack load mpich" and edit Makefile to set CC=mpicc and FC=mpif90 
+-->
 +
 ----
 make
 cd stage_write
 make
 ----
-NOTE: Adios's bin directory should be in PATH env.
+NOTE: Adios's bin directory should be in PATH env. 
+<!--- 
+Ian: Explain how to find ADIOS bin directory. ``spack find -p savanna adios'' finds three copies on my machine: adios@develop, savanna@0.5, and savanna@develop. Which?
+--> 
 
 . Run the workflow
 +
