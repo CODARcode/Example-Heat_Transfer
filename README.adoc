@@ -20,8 +20,8 @@ This example shows how to run the heat transfer ADIOS pipeline from Swift.
 .. `spack load zsh` (but I didn't try this)
 .. `sudo apt-get install zsh`
 . Build the heat transfer simulator and stager 
-.. Determine the location of the code (`spack find -p savanna`) and change to that directory
-.. Edit `Heat_Transfer/Makefile` to set `CC=mpicc` and `FC=mpif90` 
+.. Determine the location of the code (`spack find -p savanna`), say $L, and `cd $L/Heat_Transfer`
+.. Edit `Makefile` to set `CC=mpicc` and `FC=mpif90` 
 .. Build heat transfer simulator and stager:
 +
  cd Heat_Transfer
@@ -30,13 +30,14 @@ This example shows how to run the heat transfer ADIOS pipeline from Swift.
  make
 +
 . Run the workflow
-.. Edit `Heat_Transfer/heat_transfer.xml` to enable the `FLEXPATH` method. (Ensure that the following text, near the end of the file, is not commented out: `<method group="heat" method="FLEXPATH">QUEUE_SIZE=4;verbose=3</method>`.)
+.. Edit `heat_transfer.xml` to enable the `FLEXPATH` method. (Ensure that the following text, near the end of the file, is not commented out: `<method group="heat" method="FLEXPATH">QUEUE_SIZE=4;verbose=3</method>`.)
 .. Edit `run-workflow.sh` to set `LAUNCH` to point to `spack find -p mpix-launch-swift`/src
+.. You can also edit `workflow.swift` to modify the number of processes and problem size
 .. Then, type
 +
- ./run-workflow.sh 20
+ ./run-workflow.sh P
 +
-where 20 is the number of MPI processes.   As shown in `workflow.swift`, 12 processes are used for the simulation and 2 are used for the stager. (**Q: What are the other 6 processes for?**)
+where P is the number of MPI processes. (With default settings in `workflow.swift`, 12 processes are used for the simulation and 2 are used for the stager, requiring P=**??**.)
 
 == Run with compression
 
