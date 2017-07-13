@@ -15,6 +15,9 @@ This example shows how to run the heat transfer ADIOS pipeline from Swift.
  spack load adios
  spack load mpich
 +
+. Swift also needs zsh. It seems that there are two options:
+.. `spack load zsh` (but I didn't try this)
+.. `sudo apt-get install zsh`
 . Build the heat transfer simulator and stager 
 .. Determine the location of the code (`spack find -p savanna`) and change to that directory
 .. Edit `Heat_Transfer/Makefile` to set `CC=mpicc` and `FC=mpif90` 
