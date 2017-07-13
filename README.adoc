@@ -3,7 +3,7 @@
 
 This example shows how to run the heat transfer ADIOS pipeline from Swift.
 
-. Install savanna via spack and then load swift, mpix_launch, evpath, adios, and mpich
+. Install Savanna via Spack and then load swift, mpix_launch, evpath, adios, and mpich
 ----
 spack install savanna
 spack load swift
@@ -13,8 +13,8 @@ spack load adios
 spack load mpich
 ----
 . Build the heat transfer simulator and stager 
-.. Determine the location of the code (spack find -p savanna) and cd there
-.. Edit Heat_Transfer/Makefile to set CC=mpicc and FC=mpif90 
+.. Determine the location of the code (`spack find -p savanna`) and change to that directory
+.. Edit `Heat_Transfer/Makefile` to set `CC=mpicc` and `FC=mpif90` 
 .. Build heat transfer simulator and stager
 ----
 cd Heat_Transfer
@@ -23,11 +23,11 @@ cd stage_write
 make
 ----
 . Add ADIOS bin directory to PATH env
-.. Determine its location: spack find -p adios
+.. Determine its location: `spack find -p adios`
 .. Add to PATH env
 . Run the workflow
 +
-.. Edit +Heat_Transfer/heat_transfer.xml+ to enable the `FLEXPATH` method. Ensure that the following text, near the end of the file, is not commented out: +<method group="heat" method="FLEXPATH">QUEUE_SIZE=4;verbose=3</method>+
+.. Edit `Heat_Transfer/heat_transfer.xml` to enable the `FLEXPATH` method. Ensure that the following text, near the end of the file, is not commented out: `<method group="heat" method="FLEXPATH">QUEUE_SIZE=4;verbose=3</method>`
 .. Then, type
 ----
 ./run-workflow.sh 20
