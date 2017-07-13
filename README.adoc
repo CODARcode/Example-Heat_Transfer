@@ -42,8 +42,10 @@ where P is the number of MPI processes. (With default settings in `workflow.swif
 == Run with compression
 
 To perform compression through ADIOS, we need to provide additional options for `stager`:
-.. the list of variables to compress 
-.. the compression method and compression parameters to use
+
+* the list of variables to compress 
+* the compression method and compression parameters to use
+
 These are all specified in the `arguments2` variable in "workflow.swift" (line 17). 
 
 For example, the following line requests `stager` to compress the `T` and `dT` variables with the `SZ` method, maintaining absolute errors lower than 0.001 (The latter is a SZ-specific parameter. More details can be found in the ADIOS manual).
