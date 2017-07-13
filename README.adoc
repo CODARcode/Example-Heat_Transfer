@@ -13,10 +13,11 @@ spack load adios
 spack load mpich
 ----
 . Build the heat transfer simulator and stager 
-.. Determine the location of the code. (How?)
-.. Edit Makefile to set CC=mpicc and FC=mpif90 
+.. Determine the location of the code (spack find -p savanna) and cd there
+.. Edit Heat_Transfer/Makefile to set CC=mpicc and FC=mpif90 
 .. Build heat transfer simulator and stager
 ----
+cd Heat_Transfer
 make
 cd stage_write
 make
