@@ -27,13 +27,8 @@ make
 .. Add to PATH env
 . Run the workflow
 +
-.. Edit +Heat_Transfer/heat_transfer.xml+ to enable the `FLEXPATH` method. Ensure that the following text, near the end of the file, is not commented out:
-----
-  <method group="heat" method="FLEXPATH">QUEUE_SIZE=4;verbose=3</method>
-----
-+
+.. Edit +Heat_Transfer/heat_transfer.xml+ to enable the `FLEXPATH` method. Ensure that the following text, near the end of the file, is not commented out: +<method group="heat" method="FLEXPATH">QUEUE_SIZE=4;verbose=3</method>+
 .. Then, type
-+
 ----
 ./run-workflow.sh 20
 ----
