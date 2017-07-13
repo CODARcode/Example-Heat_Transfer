@@ -12,6 +12,7 @@ spack load evpath
 spack load adios
 spack load mpich
 ----
++
 . Build the heat transfer simulator and stager 
 
 .. Determine the location of the code. (How?)
