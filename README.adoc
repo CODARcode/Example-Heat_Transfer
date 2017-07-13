@@ -27,7 +27,7 @@ make
 .. Add to PATH env
 . Run the workflow
 +
-.. Edit `Heat_Transfer/heat_transfer.xml` to enable the `FLEXPATH` method. Ensure that the following text, near the end of the file, is not commented out: `<method group="heat" method="FLEXPATH">QUEUE_SIZE=4;verbose=3</method>`
+.. Edit `Heat_Transfer/heat_transfer.xml` to enable the `FLEXPATH` method. (Ensure that the following text, near the end of the file, is not commented out: `<method group="heat" method="FLEXPATH">QUEUE_SIZE=4;verbose=3</method>`.)
 .. Then, type
 ----
 ./run-workflow.sh 20
@@ -36,8 +36,8 @@ where 20 is the number of MPI processes.   As shown in the workflow, 12 processe
 +
 [NOTE]
 ====
-1. Check LAUNCH is correctly set to point to mpix_launch_swift in run-workflow.sh
-2. export LD_LIBRARY_PATH to include evpath library if you need.
+1. Check `LAUNCH` is correctly set to point to `mpix_launch_swift` in `run-workflow.sh`. (**Q: Where is `mpix_launch_swift` to be found?**)
+2. export LD_LIBRARY_PATH to include evpath library if you need. (**Not clear what this means**)
 ----
 export LD_LIBRARY_PATH=/dir/to/evpath:$LD_LIBRARY_PATH
 ----
