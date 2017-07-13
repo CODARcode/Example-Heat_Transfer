@@ -3,32 +3,33 @@
 
 This example shows how to run the heat transfer ADIOS pipeline from Swift.
 
-== Setup
 
-Install savanna via spack and then load swift, mpix_launch, evpath, adios, and mpicc
+. Install savanna via spack and then load swift, mpix_launch, evpath, adios, and mpich
 ----
 spack install savanna
 spack load swift
 spack load mpix_launch
 spack load evpath
 spack load adios
-spack load mpicc
+spack load mpich
 ----
 
 . Build the heat transfer simulator and stager 
-<!--- 
-Ian: Add that you need to run "spack load mpich" and edit Makefile to set CC=mpicc and FC=mpif90 
--->
-+
+
+.. Determine the location of the code. (How?)
+
+.. Edit Makefile to set CC=mpicc and FC=mpif90 
+
+.. Build heat transfer simulator and stager
 ----
 make
 cd stage_write
 make
 ----
-NOTE: Adios's bin directory should be in PATH env. 
-<!--- 
-Ian: Explain how to find ADIOS bin directory. ``spack find -p savanna adios'' finds three copies on my machine: adios@develop, savanna@0.5, and savanna@develop. Which?
---> 
+
+. Add ADIOS bin directory to PATH env
+
+Explain how to find ADIOS bin directory. ``spack find -p savanna adios'' finds three copies on my machine: adios@develop, savanna@0.5, and savanna@develop. Which?
 
 . Run the workflow
 +
