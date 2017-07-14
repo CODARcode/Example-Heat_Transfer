@@ -25,7 +25,7 @@ image::CODAR-fig.jpg[]
 
 == Installation
 
-. We assume that Spack is installed on your system. But in case of interest, this is how it is done:
+. We assume that Spack is installed on your system. But in case of interest, these steps work on a Linux Ubuntu workstation (some elements, such as zlib* and zsh may already be available on some systems):
 +
  sudo apt install git
  sudo apt install curl
