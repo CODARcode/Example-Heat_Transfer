@@ -25,11 +25,23 @@ image::CODAR-fig.jpg[]
 
 == Installation
 
-. We assume that Spack is installed on your system.
+. We assume that Spack is installed on your system. But in case of interest, this is how it is done:
++
+ sudo apt install git
+ sudo apt install curl
+ sudo apt install gfortran
+ sudo apt install bison
+ sudo apt install flex
+ git clone  https://github.com/CODARcode/spack
+ . spack/share/spack/setup-env.sh
++
+Then edit `~/.spack/compilers.yaml` (on Ubuntu, at least, it's in `~/.spack/linux/compilers.yaml`) and add /usr/bin/gfortran for both f77 and fcc.
 
 . Install Savanna via Spack and then load stc, mpix_launch, evpath, adios, mpich, and sz:
 +
- spack install savanna
+ cd spack
+ git checkout -t origin/codar
+ spack install savanna@develop
  spack load stc
  spack load mpix_launch
  spack load evpath
