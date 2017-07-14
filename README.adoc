@@ -2,20 +2,20 @@
 = Running the Heat Transfer/Reduction pipeline with Swift
 
 [.lead]
-This example shows how to run the heat transfer/reduction pipeline with Swift. This application works as shown in the figure:
+This example shows how to run the heat transfer/reduction pipeline with Swift. This application works as shown in the figure, with the grey callouts indicating user-controlled options for the program.
 
 image::CODAR-fig.jpg[]
 
 * Swift starts two programs: the *application* (as N~h~ processes) and the *reducer* (as N~r~ processes), connected by the *transport*. As shown in the figure, it also runs a Swift control program plus (if the Dataspaces transport is used) a Dataspaces process. *Q: Is it true that Dataspaces involves a separate process?*
-* Application: This is the `Heat Transfer` program, which runs a heat transfer simulation for a 2-D domain on a 2-D array of processes)
+* *Application*: The `Heat Transfer` program runs a heat transfer simulation for a 2-D domain on a 2-D array of processes)
 (Domain size and process count can be varied.) It outputs two variables, T and dT, at specified intervals.
-* Reducer: This is the `adios_write` program, which applies a reduction operation to each variable and writes the uncompressed and compressed results to two files, `heat.bp` and `staged.bp`, respectively. (Each file contains both T and dT.) Three reductions are supported:
+* *Reducer*: The `adios_write` program applies a reduction operation to each variable and writes the uncompressed and compressed results to two files, `heat.bp` and `staged.bp`, respectively. (Each file contains both T and dT.) Three reductions are supported:
 
 ** Identity 
 ** Compress via SZ, with specified accuracy
 ** Compress via ZFP, with specified accuracy
 
-* Transport: Three options are supported, as follows.
+* *Transport*: Three options are supported, as follows.
 
 ** FLEXPATH: *The only one tested so far. Description TBD*
 ** MPI: *Description TBD*
