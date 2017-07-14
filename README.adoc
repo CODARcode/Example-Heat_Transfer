@@ -51,7 +51,11 @@ It seems to help to restart at this point.
  spack load stc, turbine, mpix_launch, evpath, adios, mpich, sz
 +
 . Build the heat transfer simulator and stager 
-.. Determine the location of the code (`spack find -p savanna`), say $L, and `cd $L/Heat_Transfer`
+.. Determine the location of the code (`spack find -p savanna`), say $L, and `cd $L/Heat_Transfer`. The following will work as long as you only have one Savanna installed:
++
+ path2savanna = `spack find -p savanna | grep savanna | awk '{ print $2 }'`
+ cd $path2savanna/Heat_Transfer
+ 
 .. Edit `Makefile` to set `CC=mpicc` and `FC=mpif90` 
 .. Build heat transfer simulator and stager:
 +
