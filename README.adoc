@@ -34,6 +34,7 @@ image::CODAR-fig.jpg[]
  sudo apt install flex
  sudo apt install environment-modules
  sudo apt install zlib*
+ sudo apt install zsh
  git clone  https://github.com/CODARcode/spack
  . spack/share/spack/setup-env.sh
 +
