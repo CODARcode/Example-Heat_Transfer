@@ -60,7 +60,6 @@ It seems to help to restart at this point.
 .. Edit `Makefile` to set `CC=mpicc` and `FC=mpif90` 
 .. Build heat transfer simulator and stager:
 +
- cd Heat_Transfer
  make
  cd stage_write
  make
