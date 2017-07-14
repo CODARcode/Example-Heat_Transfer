@@ -47,13 +47,8 @@ It seems to help to restart at this point.
  cd spack
  git checkout -t origin/codar
  spack install savanna@develop
- spack load stc
- spack load turbine
- spack load mpix_launch
- spack load evpath
- spack load adios
- spack load mpich
- spack load sz
+ # In principle, mpix_launch and evpath are not needed
+ spack load stc, turbine, mpix_launch, evpath, adios, mpich, sz
 +
 . Build the heat transfer simulator and stager 
 .. Determine the location of the code (`spack find -p savanna`), say $L, and `cd $L/Heat_Transfer`
