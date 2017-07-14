@@ -102,8 +102,8 @@ This second example does the same thing but used the ZFP compression library:
 arguments2 = split("heat.bp staged.bp FLEXPATH \"\" MPI \"\" \"T,dt\" \"ZFP:accuracy=0.001\"", " ");
 ----
 
-== Run a multipe-experiment campaign with Cheetah
+== Run a multiple-experiment campaign with Cheetah
 
 We have described how to execute a single instance of the pipeline. The *Cheetah* system allows you to run a *campaign* involving a set of such executions, each with different configuration parameters.
 
-Instructions on how to run with Cheetah are [on a separate page](https://github.com/CODARcode/cheetah).
+Instructions on how to run with Cheetah are https://github.com/CODARcode/cheetah[on a separate page].
