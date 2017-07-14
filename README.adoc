@@ -55,9 +55,6 @@ It seems to help to restart at this point.
  spack load mpich
  spack load sz
 +
-. Swift also needs zsh. It seems that there are two options:
-.. `spack load zsh` (but I didn't try this)
-.. `sudo apt-get install zsh`
 . Build the heat transfer simulator and stager 
 .. Determine the location of the code (`spack find -p savanna`), say $L, and `cd $L/Heat_Transfer`
 .. Edit `Makefile` to set `CC=mpicc` and `FC=mpif90` 
