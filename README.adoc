@@ -32,10 +32,13 @@ image::CODAR-fig.jpg[]
  sudo apt install gfortran
  sudo apt install bison
  sudo apt install flex
+ sudo apt install environment-modules
  git clone  https://github.com/CODARcode/spack
  . spack/share/spack/setup-env.sh
 +
 Then edit `~/.spack/compilers.yaml` (on Ubuntu, at least, it's in `~/.spack/linux/compilers.yaml`) and add /usr/bin/gfortran for both f77 and fcc.
++
+It seems to help to restart at this point.
 
 . Install Savanna via Spack and then load stc, mpix_launch, evpath, adios, mpich, and sz:
 +
