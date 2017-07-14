@@ -23,6 +23,12 @@ image::CODAR-fig.jpg[]
 
 * As 1 process is needed for Swift, and 1 process for the Dataspaces transport if used, the pipeline involves N~h~ + N~r~ + 1 or N~h~ + N~r~ + 2 processes. It is conventional to supply that number as the argument to the `run-workflow.sh` command described below. (Swift does not yet provide control for the mapping of processes to cores and nodes.)
 
+In the following, we describe in turn:
+
+* How to install the Savanna package that you will use to run the pipeline
+* How to perform a single execution of a pipeline such as that shown in the figure
+* How to use the Cheetah system to configure and run a campaign involving multiple executions
+
 == Installation
 
 . We assume that Spack is installed on your system. But in case of interest, these steps work on a Linux Ubuntu workstation (some elements, such as zlib* and zsh may already be available on some systems):
@@ -64,7 +70,7 @@ It seems to help to restart at this point.
  make
 
 
-== Configure and run the basic pipeline 
+== Configure and run the basic pipeline, with and without compression 
 
 . Run the workflow
 .. Edit `heat_transfer.xml` to enable the `FLEXPATH` method. (Ensure that the following text, near the end of the file, is not commented out: `<method group="heat" method="FLEXPATH">QUEUE_SIZE=4;verbose=3</method>`.)
@@ -76,7 +82,7 @@ It seems to help to restart at this point.
 +
 where P is the number of MPI processes. (With default settings in `workflow.swift`, 12 processes are used for the simulation and 2 are used for the stager, requiring P=12 + 2 + 1 for Swift = 15. For a quick run, edit `workflow.swift` to set 1 each for both simulation and stager, thus requiring P=1+1+1=3.)
 
-== Run with compression
+. Run with compression
 
 To perform compression through ADIOS, we need to provide additional options for `stager`:
 
@@ -96,80 +102,8 @@ This second example does the same thing but used the ZFP compression library:
 arguments2 = split("heat.bp staged.bp FLEXPATH \"\" MPI \"\" \"T,dt\" \"ZFP:accuracy=0.001\"", " ");
 ----
 
+== Run a multipe-experiment campaign with Cheetah
 
+We have described how to execute a single instance of the pipeline. The *Cheetah* system allows you to run a *campaign* involving a set of such executions, each with different configuration parameters.
 
-[[spack]]
-== Swift-T build with https://github.com/LLNL/spack[Spack]
-
-**This material should not be needed and can be moved elsewhere, as Swift-T is included in Savanna.**
-
-We can use Spack to build required libraries and build Swift-T with them.
-
-. https://spack.readthedocs.io/en/latest/getting_started.html[Install Spack]
-+
-To use with Environment Modules, see https://spack.readthedocs.io/en/latest/module_file_support.html[here]. 
-Basically, you need to install env module
-+
-----
-yum install environment-modules
-----
-Or, we can use spack too
-+
-----
-spack install environment-modules
-----
-and activate it:
-+
-----
-TMP=`tempfile`
-echo >$TMP
-MODULE_HOME=`spack location --install-dir environment-modules`
-MODULE_VERSION=`ls -1 $MODULE_HOME/Modules | head -1`
-${MODULE_HOME}/Modules/${MODULE_VERSION}/bin/add.modules <$TMP
-cp .bashrc $TMP
-echo "MODULE_VERSION=${MODULE_VERSION}" > .bashrc
-cat $TMP >>.bashrc
-----
-
-. Build required libraries 
-+
-----
-spack install mpich tcl swig zsh
-----
-
-. Build JDK and Ant
-+
-To build JDK and Ant with Spack, we need extra steps.
-Bascially, we need to follow instructions 
-http://spack.readthedocs.io/en/latest/basic_usage.html#non-downloadable-tarballs[here].
-+
-Here is a short summary: Go to Java download website and download JDK (e.g., `jdk-8u131-linux-x64.tar.gz`). Then, do as follows:
-+
-----
-mkdir -p $HOME/.spack/manual_mirror/jdk
-mv jdk-8u131-linux-x64.tar.gz $HOME/.spack/manual_mirror/jdk/jdk-8u131.tar.gz
-spack mirror add manual file://$HOME/.spack/manual_mirror
-spack install jdk@8u131 ant ^jdk@8u131
-----
-
-. Build Swift-T
-+
-----
-spack load mpich tcl swig zsh jdk ant
-git clone https://github.com/swift-lang/swift-t.git
-cd swift-t
-./dev/build/init-settings.sh
-----
-+
-Edit `dev/build/swift-t-settings.sh`. At a minimum, set the install directory with SWIFT_T_PREFIX. Then, build:
-+
-----
-$ dev/build/build-all.sh
-----
-+
-After sucessful building, add PATH as follows:
-+
-----
-$ export PATH=/path/to/swift-t-install/turbine/bin:${PATH}
-$ export PATH=/path/to/swift-t-install/stc/bin:${PATH}
-----
+Instructions on how to run with Cheetah are [on a separate page](https://github.com/CODARcode/cheetah).
