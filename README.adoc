@@ -2,7 +2,9 @@
 = Heat Transfer: Swift
 
 [.lead]
-This example shows how to run the heat transfer ADIOS pipeline from Swift. This application works as shown in the figure [TBD]. 
+This example shows how to run the heat transfer ADIOS pipeline from Swift. This application works as shown in the figure:
+
+image::CODAR-fig.jpg[]
 
 * The `heat` program runs a heat transfer simulation for a 2-D domain on a 2-D array of processes. (Domain size and process count can be varied.) The simulation outputs two variables, T and dT, at specified intervals.
 * The two variables are passed to a second program, `adios_write`, which applies a transformation to each variable. Three transformations are supported:
@@ -11,7 +13,7 @@ This example shows how to run the heat transfer ADIOS pipeline from Swift. This 
 ** Compress via SZ, with specified accuracy
 ** Compress via ZFP, with specified accuracy
 
-* The uncompressed and compressed results are written to two files, `heat.bp` and `staged.bp`, respectively.
+* The uncompressed and compressed results are written to two files, `heat.bp` and `staged.bp`, respectively. (Each contains both T and dT.)
 * The information exchange between `heat` and `adios_write` may be performed in different ways:
 
 ** FLEXPATH: 
