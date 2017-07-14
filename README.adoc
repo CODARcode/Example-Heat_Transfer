@@ -61,7 +61,7 @@ image::CODAR-fig.jpg[]
 +
  ./run-workflow.sh P
 +
-where P is the number of MPI processes. (With default settings in `workflow.swift`, 12 processes are used for the simulation and 2 are used for the stager, requiring P=12 + 2 + 1 for Swift. For a quick run, edit `workflow.swift` to set P=1 for both simulation and stager, thus requiring P=3.)
+where P is the number of MPI processes. (With default settings in `workflow.swift`, 12 processes are used for the simulation and 2 are used for the stager, requiring P=12 + 2 + 1 for Swift = 15. For a quick run, edit `workflow.swift` to set 1 each for both simulation and stager, thus requiring P=1+1+1=3.)
 
 == Run with compression
 
