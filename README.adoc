@@ -46,6 +46,7 @@ It seems to help to restart at this point.
  git checkout -t origin/codar
  spack install savanna@develop
  spack load stc
+ spack load turbine
  spack load mpix_launch
  spack load evpath
  spack load adios
