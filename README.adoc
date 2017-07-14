@@ -42,7 +42,7 @@ Then edit `~/.spack/compilers.yaml` (on Ubuntu, at least, it's in `~/.spack/linu
 +
 It seems to help to restart at this point.
 
-. Install Savanna via Spack and then load stc, mpix_launch, evpath, adios, mpich, and sz:
+. Install Savanna via Spack and then `spack load` required modules:
 +
  cd spack
  git checkout -t origin/codar
