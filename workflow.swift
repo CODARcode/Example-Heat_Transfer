@@ -1,4 +1,4 @@
-
+import assert;
 import io;
 import launch;
 import string;
@@ -6,6 +6,7 @@ import sys;
 
 string rmethod;
 void ready;
+int availproc;
 
 int htproc_x = 4;
 int htproc_y = 3;
@@ -13,9 +14,10 @@ int htproc = htproc_x * htproc_y;
 int swproc = 3;
 int dsproc = 1;
 
+availproc = turbine_workers();
 rmethod = argv("s", "FLEXPATH");
 
-printf("rmethod = %s", rmethod);
+printf("Available processes: %d" % availproc);
 
 app(void signal) check_conf_exists () {
        "./check_conf_exists.sh"
@@ -27,6 +29,7 @@ app(void signal) dummy () {
 
 if(rmethod == "DATASPACES")
 {
+    assert(availproc >= (htproc + swproc + dsproc), "Not enough processes assigned. Workflow cannot run.");
     program3 = "dataspaces_server";
     arguments3 = split("-s %d -c 15" % dsproc, " ");
     printf("swift: launching %s", program3);
@@ -40,6 +43,7 @@ if(rmethod == "DATASPACES")
 }
 else
 {
+    assert(availproc >= (htproc + swproc), "Not enough processes assigned. Workflow cannot run.");
     ready = dummy();    
 }
 
