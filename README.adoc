@@ -72,7 +72,9 @@ It seems to help to restart at this point.
 == Configure and run the basic pipeline, with and without compression 
 
 . Run the workflow
-.. Edit `heat_transfer.xml` to enable the `FLEXPATH` method. (Ensure that the following text, near the end of the file, is not commented out: `<method group="heat" method="FLEXPATH">QUEUE_SIZE=4;verbose=3</method>`.)
+.. Configure staging method
+... To use FlexPath: edit `heat_transfer.xml` to enable the `FLEXPATH` method. (Ensure that the following text, near the end of the file, is not commented out: `<method group="heat" method="FLEXPATH">QUEUE_SIZE=4;verbose=3</method>`. All other lines starting with `<method group="heat" method...` should be commented out.) 
+... To use DataSpaces: edit `heat_transfer.xml` to enable the `DATASPACES` method. (In this case the following line should not be commented out: `<method group="heat" method="DATASPACES"/>`, while all other lines starting with `<method group="heat" method...` should be commented out.) 
 .. Edit `run-workflow.sh` to set `LAUNCH` to point to `spack find -p mpix-launch-swift`/src
 .. You can also edit `workflow.swift` to modify the number of processes and problem size
 .. Then, type
