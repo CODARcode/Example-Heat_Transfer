@@ -11,7 +11,7 @@ int availproc;
 int htproc_x = 4;
 int htproc_y = 3;
 int htproc = htproc_x * htproc_y;
-int swproc = 2;
+int swproc = 3;
 int dsproc = 1;
 
 availproc = turbine_workers();
