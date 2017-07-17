@@ -11,13 +11,11 @@ int availproc;
 int htproc_x = 4;
 int htproc_y = 3;
 int htproc = htproc_x * htproc_y;
-int swproc = 3;
+int swproc = 2;
 int dsproc = 1;
 
 availproc = turbine_workers();
 rmethod = argv("s", "FLEXPATH");
-
-printf("Available processes: %d" % availproc);
 
 app(void signal) check_conf_exists () {
        "./check_conf_exists.sh"
@@ -31,7 +29,7 @@ if(rmethod == "DATASPACES")
 {
     assert(availproc >= (htproc + swproc + dsproc), "Not enough processes assigned. Workflow cannot run.");
     program3 = "dataspaces_server";
-    arguments3 = split("-s %d -c 15" % dsproc, " ");
+    arguments3 = split("-s %d -c %d" % (dsproc, (htproc + swproc)), " ");
     printf("swift: launching %s", program3);
     exit_code3 = @par=dsproc launch(program3, arguments3);
     printf("swift: received exit code: %d", exit_code3);
