@@ -7,6 +7,12 @@ import sys;
 string rmethod;
 void ready;
 
+int htproc_x = 4;
+int htproc_y = 3;
+int htproc = htproc_x * htproc_y;
+int swproc = 3;
+int dsproc = 1;
+
 rmethod = argv("s", "FLEXPATH");
 
 printf("rmethod = %s", rmethod);
@@ -22,9 +28,9 @@ app(void signal) dummy () {
 if(rmethod == "DATASPACES")
 {
     program3 = "dataspaces_server";
-    arguments3 = split("-s 1 -c 15", " ");
+    arguments3 = split("-s %d -c 15" % dsproc, " ");
     printf("swift: launching %s", program3);
-    exit_code3 = @par=1 launch(program3, arguments3);
+    exit_code3 = @par=dsproc launch(program3, arguments3);
     printf("swift: received exit code: %d", exit_code3);
     if(exit_code3 != 0)
     {
@@ -39,9 +45,9 @@ else
 
 wait(ready) {
     program1 = "./heat_transfer_adios2";
-    arguments1 = split("heat  4 3  40 50  6 500", " ");
+    arguments1 = split("heat  %d %d 40 50  6 500" % (htproc_x, htproc_y), " ");
     printf("swift: launching: %s", program1);
-    exit_code1 = @par=12 launch(program1, arguments1);
+    exit_code1 = @par=htproc launch(program1, arguments1);
     printf("swift: received exit code: %d", exit_code1);
     if (exit_code1 != 0)
     {
@@ -52,7 +58,7 @@ wait(ready) {
     arguments2 = split("heat.bp staged.bp %s \"\" MPI \"\"" % rmethod , " ");
     printf("size: %i", size(arguments2));
     printf("swift: launching: %s", program2);
-    exit_code2 = @par=3 launch(program2, arguments2);
+    exit_code2 = @par=swproc launch(program2, arguments2);
     printf("swift: received exit code: %d", exit_code2);
     if (exit_code2 != 0)
     {
