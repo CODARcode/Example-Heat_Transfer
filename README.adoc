@@ -77,9 +77,9 @@ It seems to help to restart at this point.
 .. You can also edit `workflow.swift` to modify the number of processes and problem size
 .. Then, type
 +
- ./run-workflow.sh P
+ ./run-workflow.sh P [DATASPACES|FLEXPATH]
 +
-where P is the number of MPI processes. (With default settings in `workflow.swift`, 12 processes are used for the simulation and 2 are used for the stager, requiring P=12 + 2 + 1 for Swift = 15. For a quick run, edit `workflow.swift` to set 1 each for both simulation and stager, thus requiring P=1+1+1=3.)
+where P is the number of MPI processes. (With default settings in `workflow.swift`, 12 processes are used for the simulation and 3 are used for the stager, requiring P=12 + 3 + 1 for Swift = 16. If DataSpaces transport method is used, then an additional process will be required, for a total of 17. For a quick run, edit `workflow.swift` to set 1 each for both simulation and stager, thus requiring P=1+1+1=3 (four with DataSpaces.) The second option specifies the staging transport. If no staging transport is specified, FlexPath will be used.
 
 . Run with compression
 
@@ -88,7 +88,7 @@ To perform compression through ADIOS, we need to provide additional options for 
 * the list of variables to compress 
 * the compression method and compression parameters to use
 
-These are all specified in the `arguments2` variable in "workflow.swift" (line 17). 
+These are all specified in the `arguments2` variable in "workflow.swift" (line 62). 
 
 For example, the following line requests `stager` to compress the `T` and `dT` variables with the `SZ` method, maintaining absolute errors lower than 0.001 (The latter is a SZ-specific parameter. More details can be found in the ADIOS manual).
 
