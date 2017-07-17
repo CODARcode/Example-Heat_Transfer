@@ -8,18 +8,15 @@ then
 fi
 
 PROCS=$1
-WORKFLOW=workflow
+STAGING=FLEXPATH
 
 if [ ${#} -gt 1 ]
 then
   if [ "$2" = "DATASPACES" ]
   then
-    WORKFLOW=workflow-ds
-    rm -f conf srv.lock *bp
-  elif [ "$2" = "FLEXPATH" ]
-  then
-    WORKFLOW=workflow
-  fi 
+    rm -f conf srv.lck *bp
+  fi
+  STAGING=$2
 fi
 
 # USER: Set this to the correct location:
@@ -30,5 +27,5 @@ MACHINE=${MACHINE:-}
 THIS=$( dirname $0 )
 
 rm -f heat.bp_*_info.txt
-stc -p -u -I $LAUNCH -r $LAUNCH ${WORKFLOW}.swift
-turbine -n $PROCS $MACHINE ${WORKFLOW}.tic
+stc -p -u -I $LAUNCH -r $LAUNCH workflow.swift 
+turbine -n $PROCS $MACHINE workflow.tic -s=${STAGING}
