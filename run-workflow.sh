@@ -20,7 +20,7 @@ then
 fi
 
 # USER: Set this to the correct location:
-LAUNCH=/home/pdavis/codar/spack/opt/spack/linux-ubuntu16-x86_64/gcc-5.4.0/mpix-launch-swift-develop-zcj3o456mlrlnmpoxkv5vtrmwx2t5rfh/src
+LAUNCH=
 
 MACHINE=${MACHINE:-}
 
