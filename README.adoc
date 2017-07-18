@@ -6,7 +6,7 @@ This example shows how to run the heat transfer/reduction pipeline with Swift. T
 
 image::CODAR-fig.jpg[]
 
-* Swift starts two programs: the *application* (as N~h~ processes) and the *reducer* (as N~r~ processes), connected by the *transport*. As shown in the figure, it also runs a Swift control program plus (if the Dataspaces transport is used) a Dataspaces process. *Q: Is it true that Dataspaces involves a separate process?*
+* Swift starts two programs: the *application* (as N~h~ processes) and the *reducer* (as N~r~ processes), connected by the *transport*. As shown in the figure, it also runs a Swift control program plus (if the Dataspaces transport is used) a Dataspaces process.
 * *Application*: The `Heat Transfer` program runs a heat transfer simulation for a 2-D domain on a 2-D array of processes)
 (Domain size and process count can be varied.) It outputs two variables, T and dT, at specified intervals.
 * *Reducer*: The `adios_write` program applies a reduction operation to each variable and writes the uncompressed and compressed results to two files, `heat.bp` and `staged.bp`, respectively. (Each file contains both T and dT.) Three reductions are supported:
@@ -75,11 +75,15 @@ It seems to help to restart at this point.
 .. Configure staging method
 ... To use FlexPath: edit `heat_transfer.xml` to enable the `FLEXPATH` method. (Ensure that the following text, near the end of the file, is not commented out: `<method group="heat" method="FLEXPATH">QUEUE_SIZE=4;verbose=3</method>`. All other lines starting with `<method group="heat" method...` should be commented out.) 
 ... To use DataSpaces: edit `heat_transfer.xml` to enable the `DATASPACES` method. (In this case the following line should not be commented out: `<method group="heat" method="DATASPACES"/>`, while all other lines starting with `<method group="heat" method...` should be commented out.) 
-.. Edit `run-workflow.sh` to set `LAUNCH` to point to `spack find -p mpix-launch-swift`/src
+... To use MPI: edit `heat_transfer.xml` to enable the `MPI` method. (In this case the following line should not be commented out: `<method group="heat" method="MPI"/>`, while all other lines starting with `<method group="heat" method...` should be commented out.). 
+.. Edit `run-workflow.sh` to set `LAUNCH` to point to `/dir/to/mpix-launch-swift/src`. For an example, we can do with Spack as follows:
++
+ LAUNCH=$(spack find -p mpix-launch-swift | grep mpix-launch-swift | awk '{print $2}')/src
++
 .. You can also edit `workflow.swift` to modify the number of processes and problem size
 .. Then, type
 +
- ./run-workflow.sh P [DATASPACES|FLEXPATH]
+ ./run-workflow.sh P [DATASPACES|FLEXPATH|MPI]
 +
 where P is the number of MPI processes. (With default settings in `workflow.swift`, 12 processes are used for the simulation and 3 are used for the stager, requiring P=12 + 3 + 1 for Swift = 16. If DataSpaces transport method is used, then an additional process will be required, for a total of 17. For a quick run, edit `workflow.swift` to set 1 each for both simulation and stager, thus requiring P=1+1+1=3 (four with DataSpaces.) The second option specifies the staging transport. If no staging transport is specified, FlexPath will be used.
 

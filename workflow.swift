@@ -45,6 +45,19 @@ else
     ready = dummy();    
 }
 
+run_stager () {
+    program2 = "stage_write/stage_write";
+    arguments2 = split("heat.bp staged.bp %s \"\" MPI \"\"" % rmethod , " ");
+    printf("size: %i", size(arguments2));
+    printf("swift: launching: %s", program2);
+    exit_code2 = @par=swproc launch(program2, arguments2);
+    printf("swift: received exit code: %d", exit_code2);
+    if (exit_code2 != 0)
+    {
+        printf("swift: The launched application did not succeed.");
+    }
+}
+
 wait(ready) {
     program1 = "./heat_transfer_adios2";
     arguments1 = split("heat  %d %d 40 50  6 500" % (htproc_x, htproc_y), " ");
@@ -56,14 +69,15 @@ wait(ready) {
         printf("swift: The launched application did not succeed.");
     }
 
-    program2 = "stage_write/stage_write";
-    arguments2 = split("heat.bp staged.bp %s \"\" MPI \"\"" % rmethod , " ");
-    printf("size: %i", size(arguments2));
-    printf("swift: launching: %s", program2);
-    exit_code2 = @par=swproc launch(program2, arguments2);
-    printf("swift: received exit code: %d", exit_code2);
-    if (exit_code2 != 0)
+    if(rmethod == "BP")
     {
-        printf("swift: The launched application did not succeed.");
+        wait (exit_code1)
+        {
+            run_stager();
+        }
+    }
+    else
+    {
+        run_stager();
     }
 }
