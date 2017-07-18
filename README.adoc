@@ -53,7 +53,7 @@ It seems to help to restart at this point.
  cd spack
  git checkout -t origin/codar
  spack install savanna@develop
- spack load stc turbine adios mpich sz
+ spack load stc turbine adios mpich sz dataspaces
 +
 . Build the heat transfer simulator and stager 
 .. Determine the location of the code (`spack find -p savanna`), say $L, and `cd $L/Heat_Transfer`. The following will work as long as you only have one Savanna installed:
