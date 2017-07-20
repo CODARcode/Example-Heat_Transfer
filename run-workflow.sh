@@ -3,7 +3,7 @@ set -eu
 
 if [ ${#} -lt 1 ]
 then
-  echo "Usage: $0 PROCS [DATASPACES|FLEXPATH]"
+  echo "Usage: $0 PROCS [DATASPACES|FLEXPATH|MPI]"
   exit 1
 fi
 
@@ -12,11 +12,15 @@ STAGING=FLEXPATH
 
 if [ ${#} -gt 1 ]
 then
+  STAGING=$2
   if [ "$2" = "DATASPACES" ]
   then
     rm -f conf srv.lck *bp
   fi
-  STAGING=$2
+  if [ "$2" = "MPI" ]
+  then
+    STAGING=BP
+  fi
 fi
 
 # USER: Set this to the correct location:
