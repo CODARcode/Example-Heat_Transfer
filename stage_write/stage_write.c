@@ -45,6 +45,14 @@ static const int max_write_buffer_size = 1024*1024*1024;
 
 static int timeout_sec = 10; // will stop if no data found for this time (-1: never stop)
 
+typedef struct {
+    ADIOS_VARINFO * v;
+    uint64_t        start[10];
+    uint64_t        count[10];
+    uint64_t        writesize; // size of subset this process writes, 0: do not write
+} VarInfo;
+
+VarInfo * varinfo;
 
 // Global variables
 int         rank, numproc;
@@ -174,6 +182,11 @@ int main (int argc, char ** argv)
     int         steps = 0, curr_step;
     int         retval = 0;
 
+    double      tick, tock;
+    double      io_time = 0.0;
+    double      this_step_timestamp, prev_step_timestamp;
+    double      t1, t2;
+
     MPI_Init (&argc, &argv);
     //comm = MPI_COMM_WORLD;
     //MPI_Comm_rank (comm, &rank);
@@ -185,6 +198,8 @@ int main (int argc, char ** argv)
     MPI_Comm_split(MPI_COMM_WORLD, 2, rank, &comm);	//color=2
     MPI_Comm_rank (comm, &rank);
     MPI_Comm_size (comm, &numproc);
+
+    if (rank == 0) tick = MPI_Wtime();
 
     if (processArgs(argc, argv)) {
         return 1;
@@ -234,6 +249,7 @@ int main (int argc, char ** argv)
                    rank, f->current_step);
         }
 
+        prev_step_timestamp = MPI_Wtime();
         while (1)
         {
             steps++; // start counting from 1
@@ -243,15 +259,31 @@ int main (int argc, char ** argv)
             print0 ("  last step:      %d\n", f->last_step);
             print0 ("  # of variables: %d:\n", f->nvars);
 
+            if (rank == 0) {
+                this_step_timestamp = MPI_Wtime();
+                printf("step gap: %lf\n", this_step_timestamp - prev_step_timestamp);
+                prev_step_timestamp = this_step_timestamp;
+            }
+
+            t1 = MPI_Wtime();
             retval = process_metadata(steps);
             if (retval) break;
+            t2 = MPI_Wtime();
+            if(rank==0) printf("stage_write rank %d time to process metadata %lf\n", rank, t2-t1);
 
+            t1 = MPI_Wtime();
             retval = read_write(steps);
             if (retval) break;
+            t2 = MPI_Wtime();
+            io_time += t2-t1;
+            if(rank==0) printf("stage_write rank %d time to read write %lf\n", rank, t2-t1);
 
             // advance to 1) next available step with 2) blocking wait 
             curr_step = f->current_step; // save for final bye print
+            t1 = MPI_Wtime();
             adios_advance_step (f, 0, timeout_sec);
+            t2 = MPI_Wtime();
+            if(rank==0) printf("stage_write rank %d time to advance step %lf\n", rank, t2-t1);
 
             if (adios_errno == err_end_of_stream) 
             {
@@ -273,26 +305,23 @@ int main (int argc, char ** argv)
         }
 
         adios_read_close (f);
+        if(readbuf) free(readbuf);
+        if(varinfo) free(varinfo);
+        if(group_name) free(group_name);
     } 
     print0 ("Bye after processing %d steps\n", steps);
 
     adios_read_finalize_method (read_method);
     adios_finalize (rank);
 
+    if (rank == 0) tock = MPI_Wtime();
+    print0("Stage_write runtime: %lf, write time: %lf\n", tock-tick, io_time);
+
     MPI_Finalize ();
 
     return retval;
 }
 
-
-typedef struct {
-    ADIOS_VARINFO * v;
-    uint64_t        start[10];
-    uint64_t        count[10];
-    uint64_t        writesize; // size of subset this process writes, 0: do not write
-} VarInfo;
-
-VarInfo * varinfo;
 
 int process_metadata(int step)
 {
@@ -307,7 +336,7 @@ int process_metadata(int step)
     if (step > 1)
     {
         // right now, nothing to prepare in later steps
-        print("Step %d. return immediately\n",step);
+        // print("Step %d. return immediately\n",step);
         return 0;
     }
 
@@ -394,6 +423,9 @@ int process_metadata(int step)
     // Select output method
     adios_select_method (gh, wmethodname, wmethodparams, "");
 
+	// TAHSIN
+	//adios_set_time_aggregation(gh,64*1024*1024,0);
+
     // Define variables for output based on decomposition
     char *vpath, *vname;
     for (i=0; i<f->nvars; i++) 
@@ -409,9 +441,11 @@ int process_metadata(int step)
                 int64s_to_str (v->ndim, varinfo[i].count, ldims);
                 int64s_to_str (v->ndim, varinfo[i].start, offs);
 
+		/*
                 print ("rank %d: Define variable path=\"%s\" name=\"%s\"  "
                        "gdims=%s  ldims=%s  offs=%s\n", 
                        rank, vpath, vname, gdims, ldims, offs);
+		*/
 
                 int64_t var_id;
                 var_id = adios_define_var (gh, vname, vpath, v->type, ldims, gdims, offs);
@@ -431,8 +465,9 @@ int process_metadata(int step)
             }
             else 
             {
+		/*
                 print ("rank %d: Define scalar path=\"%s\" name=\"%s\"\n",
-                       rank, vpath, vname);
+                       rank, vpath, vname); */
 
                 adios_define_var (gh, vname, vpath, v->type, "", "", "");
             }
@@ -470,21 +505,28 @@ int process_metadata(int step)
     return retval;
 }
 
+#define MAX_TIMESTEPS_PER_FILE (3*1024)
+int  time_step_count = 0;
+int  current_idx = 0;
+char currentfile[256];
+
 int read_write(int step)
 {
     int retval = 0;
     int i;
     uint64_t total_size;
 
+    sprintf(currentfile,"%s%d",outfilename,current_idx);
+
     // open output file
-    adios_open (&fh, group_name, outfilename, (step==1 ? "w" : "a"), comm);
+    adios_open (&fh, group_name, currentfile, (time_step_count==0 ? "w" : "a"), comm);
     adios_group_size (fh, write_total, &total_size);
     
     for (i=0; i<f->nvars; i++) 
     {
         if (varinfo[i].writesize != 0) {
             // read variable subset
-            print ("rank %d: Read variable %d: %s\n", rank, i, f->var_namelist[i]); 
+            // print ("rank %d: Read variable %d: %s\n", rank, i, f->var_namelist[i]); 
             ADIOS_SELECTION *sel = adios_selection_boundingbox (varinfo[i].v->ndim,
                     varinfo[i].start, 
                     varinfo[i].count);
@@ -493,13 +535,19 @@ int read_write(int step)
 
 
             // write (buffer) variable
-            print ("rank %d: Write variable %d: %s\n", rank, i, f->var_namelist[i]); 
+            // print ("rank %d: Write variable %d: %s\n", rank, i, f->var_namelist[i]); 
             adios_write(fh, f->var_namelist[i], readbuf);
         }
     }
 
     adios_release_step (f); // this step is no longer needed to be locked in staging area
     adios_close (fh); // write out output buffer to file
+
+    if ((++time_step_count)>=MAX_TIMESTEPS_PER_FILE) {
+		current_idx++;
+		time_step_count = 0;
+    }
+
     return retval;
 }
 
