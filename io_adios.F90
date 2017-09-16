@@ -18,6 +18,9 @@ subroutine io_init()
     use heat_vars
     use adios_write_mod
     call adios_init ("heat_transfer.xml", app_comm, ierr)
+
+    io_total_time    = 0.0
+    write_total_time = 0.0
 end subroutine io_init
 
 subroutine io_finalize()
@@ -31,8 +34,9 @@ subroutine io_write(tstep,curr)
     use adios_write_mod
     implicit none
     include 'mpif.h'
-    integer, intent(in) :: tstep
-    integer, intent(in) :: curr
+    integer,    intent(in)  :: tstep
+    integer,    intent(in)  :: curr
+    double precision        :: write_time_tmp
 
     integer*8 adios_handle, adios_groupsize, adios_totalsize
     integer adios_err
@@ -65,14 +69,26 @@ subroutine io_write(tstep,curr)
     call adios_write (adios_handle, "iterations", iters, adios_err)
     call adios_write (adios_handle, "T", T(1:ndx,1:ndy,curr), adios_err)
     call adios_write (adios_handle, "dT", dT, adios_err)
+
+    write_start_time = MPI_Wtime()
     call adios_close (adios_handle, adios_err)
+    write_end_time = MPI_Wtime()
+
     call MPI_BARRIER(app_comm ,adios_err)
+
+    write_time_tmp = write_end_time - write_start_time
+    call mpi_reduce(write_time_tmp,write_time,1,mpi_double_precision,MPI_SUM,0,app_comm,ierr)
+    if (ierr .ne. 0) write_time = write_time_tmp
+
     io_end_time = MPI_WTIME()
-    io_total_time = io_end_time - io_start_time
+    io_time = io_end_time - io_start_time
+
+    write_total_time = write_total_time + write_time
+    io_total_time = io_total_time + io_time
     sz = adios_totalsize * nproc/1024.d0/1024.d0/1024.d0 !size in GB
-    gbs = sz/io_total_time
+    gbs = sz/io_time
     if (rank==0) print '("Step ",i3,": ",a20,f12.4,2x,f12.3,2x,f12.3)', &
-        tstep,filename,sz,io_total_time,gbs
+        tstep,filename,sz,io_time,gbs
 end subroutine io_write
 
 end module heat_io
