@@ -21,6 +21,7 @@ subroutine io_init()
 
     io_total_time    = 0.0
     write_total_time = 0.0
+    write_time       = 0.0
 end subroutine io_init
 
 subroutine io_finalize()
@@ -76,14 +77,10 @@ subroutine io_write(tstep,curr)
 
     call MPI_BARRIER(app_comm ,adios_err)
 
-    write_time_tmp = write_end_time - write_start_time
-    call mpi_reduce(write_time_tmp,write_time,1,mpi_double_precision,MPI_SUM,0,app_comm,ierr)
-    if (ierr .ne. 0) write_time = write_time_tmp
-
     io_end_time = MPI_WTIME()
     io_time = io_end_time - io_start_time
+    write_time = write_time + write_end_time - write_start_time
 
-    write_total_time = write_total_time + write_time
     io_total_time = io_total_time + io_time
     sz = adios_totalsize * nproc/1024.d0/1024.d0/1024.d0 !size in GB
     gbs = sz/io_time
