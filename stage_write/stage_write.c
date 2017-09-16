@@ -68,7 +68,7 @@ int         decomp_values[10];
 
 
 int process_metadata(int step);
-int read_write(int step);
+int read_write(int step, double*);
 
 void printUsage(char *prgname)
 {
@@ -185,7 +185,7 @@ int main (int argc, char ** argv)
     double      tick, tock;
     double      io_time = 0.0;
     double      this_step_timestamp, prev_step_timestamp;
-    double      t1, t2;
+    double      t1, t2, write_time, total_write_time;
 
     MPI_Init (&argc, &argv);
     //comm = MPI_COMM_WORLD;
@@ -272,7 +272,7 @@ int main (int argc, char ** argv)
             if(rank==0) printf("stage_write rank %d time to process metadata %lf\n", rank, t2-t1);
 
             t1 = MPI_Wtime();
-            retval = read_write(steps);
+            retval = read_write(steps, &write_time);
             if (retval) break;
             t2 = MPI_Wtime();
             io_time += t2-t1;
@@ -315,7 +315,8 @@ int main (int argc, char ** argv)
     adios_finalize (rank);
 
     if (rank == 0) tock = MPI_Wtime();
-    print0("Stage_write runtime: %lf, write time: %lf\n", tock-tick, io_time);
+    MPI_Reduce(&write_time, &total_write_time, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
+    print0("Stage_write runtime: %lf\nStage_write io time: %lf\nStage_write write time: %lf\n", tock-tick, io_time, total_write_time);
 
     MPI_Finalize ();
 
@@ -510,11 +511,12 @@ int  time_step_count = 0;
 int  current_idx = 0;
 char currentfile[256];
 
-int read_write(int step)
+int read_write(int step, double *write_time)
 {
     int retval = 0;
     int i;
     uint64_t total_size;
+    double t1, t2;
 
     sprintf(currentfile,"%s%d",outfilename,current_idx);
 
@@ -541,7 +543,11 @@ int read_write(int step)
     }
 
     adios_release_step (f); // this step is no longer needed to be locked in staging area
+    t1 = MPI_Wtime();
     adios_close (fh); // write out output buffer to file
+    t2 = MPI_Wtime();
+
+    *write_time = *write_time + t2-t1;
 
     if ((++time_step_count)>=MAX_TIMESTEPS_PER_FILE) {
 		current_idx++;
@@ -550,6 +556,4 @@ int read_write(int step)
 
     return retval;
 }
-
-
 
