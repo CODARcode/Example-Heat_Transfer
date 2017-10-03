@@ -477,8 +477,10 @@ int read_write(int step)
     uint64_t total_size;
 
     // open output file
-    adios_open (&fh, group_name, outfilename, (step==1 ? "w" : "a"), comm);
-    adios_group_size (fh, write_total, &total_size);
+    retval = adios_open (&fh, group_name, outfilename, (step==1 ? "w" : "a"), comm);
+	if (retval!=0) return retval;
+    retval = adios_group_size (fh, write_total, &total_size);
+	if (retval!=0) return retval;
     
     for (i=0; i<f->nvars; i++) 
     {
@@ -488,18 +490,23 @@ int read_write(int step)
             ADIOS_SELECTION *sel = adios_selection_boundingbox (varinfo[i].v->ndim,
                     varinfo[i].start, 
                     varinfo[i].count);
-            adios_schedule_read_byid (f, sel, i, 0, 1, readbuf);
-            adios_perform_reads (f, 1);   
+			if (sel==NULL) return -1;
+            retval = adios_schedule_read_byid (f, sel, i, 0, 1, readbuf);
+			if (retval!=0) return retval;
+            retval = adios_perform_reads (f, 1);   
+			if (retval!=0) return retval;
 
 
             // write (buffer) variable
             print ("rank %d: Write variable %d: %s\n", rank, i, f->var_namelist[i]); 
-            adios_write(fh, f->var_namelist[i], readbuf);
+            retval = adios_write(fh, f->var_namelist[i], readbuf);
+			if (retval!=0) return retval;
         }
     }
 
     adios_release_step (f); // this step is no longer needed to be locked in staging area
-    adios_close (fh); // write out output buffer to file
+	if (retval!=0) return retval;
+    retval = adios_close (fh); // write out output buffer to file
     return retval;
 }
 
