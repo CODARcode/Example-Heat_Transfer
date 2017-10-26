@@ -15,6 +15,8 @@ LINKER=cc
  and is missing some fixes, alternatively use spack or a manual adios build.
  For spack instructions, see
  https://github.com/CODARcode/savanna/blob/master/README.md#installation
+ for manual instructions, see parts II and III of
+ https://github.com/pnorbert/adiosvm/blob/master/README.txt
 ----
 module load adios/1.12.0 flexpath/1.12
 ----
