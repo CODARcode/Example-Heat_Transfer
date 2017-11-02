@@ -34,9 +34,15 @@ app(void signal) dummy () {
 	"true"
 }
 
+check_procs(int minimum_proc) {
+    assert(availproc >= minimum_proc,
+           "Workflow cannot run: Not enough processes assigned. " +
+           "Need " + minimum_proc + " worker processes.");
+}
+
 if(rmethod == "DATASPACES")
 {
-    assert(availproc >= (htproc + swproc + dsproc), "Not enough processes assigned. Workflow cannot run.");
+    check_procs(htproc + swproc + dsproc);
     program3 = "dataspaces_server";
     arguments3 = split("-s %d -c %d" % (dsproc, (htproc + swproc)), " ");
     printf("swift: launching %s", program3);
@@ -50,7 +56,7 @@ if(rmethod == "DATASPACES")
 }
 else
 {
-    assert(availproc >= (htproc + swproc), "Not enough processes assigned. Workflow cannot run.");
+    check_procs(htproc + swproc);
     ready = dummy();    
 }
 
