@@ -1,6 +1,10 @@
 
 = Running the Heat Transfer/Reduction pipeline with Swift
 
+////
+This lead syntax does not work with the asciidoc command line tool
+////
+
 [.lead]
 This example shows how to run the heat transfer/reduction pipeline with Swift. This application works as shown in the figure, with the grey callouts indicating user-controlled options for the program.
 
