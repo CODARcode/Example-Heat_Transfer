@@ -117,3 +117,31 @@ arguments2 = split("heat.bp staged.bp FLEXPATH \"\" MPI \"\" \"T,dt\" \"ZFP:accu
 We have described how to execute a single instance of the pipeline. The *Cheetah* system allows you to run a *campaign* involving a set of such executions, each with different configuration parameters.
 
 Instructions on how to run with Cheetah are https://github.com/CODARcode/cheetah[on a separate page].
+
+== Developer quick start notes
+
+These notes are for developers that want to work from git clones, not Spack.
+
+. Download/install EVPATH/FlexPath +
+Directions here: https://www.cc.gatech.edu/systems/projects/EVPath
++
+----
+$ wget http://www.cc.gatech.edu/systems/projects/EVPath/chaos_bootstrap.pl
+$./chaos_bootstrap.pl -i
+$ perl ./chaos_build.pl
+----
++
+. Download/install ADIOS
++
+----
+$ wget http://users.nccs.gov/~pnorbert/adios-1.11.0.tar.gz
+$ ./configure --prefix=... --with-flexpath=...
+----
+. Install Swift/T +
+Follow directions here: +
+** http://swift-lang.github.io/swift-t/guide.html#Build_configuration
+** http://swift-lang.github.io/swift-t/guide.html#_from_source or
+. Install MPIX_Launch module: +
+Follow directions here:
++
+** https://bitbucket.org/jmjwozniak/mpix_launch_swift
