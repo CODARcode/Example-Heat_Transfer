@@ -126,8 +126,16 @@ These notes are for developers that want to work from git clones, not Spack.
 Directions here: https://www.cc.gatech.edu/systems/projects/EVPath
 +
 ----
+$ mkdir evpath-build
+$ cd evpath-build
 $ wget http://www.cc.gatech.edu/systems/projects/EVPath/chaos_bootstrap.pl
-$./chaos_bootstrap.pl -i
+$ ./chaos_bootstrap.pl -i
+----
++
+** Now edit chaos_build_config to remove the BUILDLIST entries after +
+evpath with a comment (%). Then:
++
+----
 $ perl ./chaos_build.pl
 ----
 +
@@ -137,15 +145,48 @@ $ perl ./chaos_build.pl
 $ wget http://users.nccs.gov/~pnorbert/adios-1.11.0.tar.gz
 $ ./configure --prefix=... --with-flexpath=...
 ----
-. Install Swift/T +
-Follow directions here: +
-** http://swift-lang.github.io/swift-t/guide.html#Build_configuration
-** http://swift-lang.github.io/swift-t/guide.html#_from_source or
-. Install MPIX_Launch module: +
++
+Then put the ADIOS bin/ directory in your PATH
++
+. Clone/install Swift/T
++
+----
+$ git clone git@github.com:swift-lang/swift-t.git # or
+$ git clone https://github.com/swift-lang/swift-t.git
+----
++
+Follow directions here:
++
+** http://swift-lang.github.io/swift-t/guide.html#Build_configuration or
+** http://swift-lang.github.io/swift-t/guide.html#_from_source
++
+Then put the STC and Turbine bin/ directories in your PATH
++
+. Install the MPIX_Launch module: +
 Follow directions here:
 +
 ** https://bitbucket.org/jmjwozniak/mpix_launch_swift
+. Build the heat_transfer simulator code:
++
+----
+make
+----
+. Build the stage_write program
++
+----
+cd stage_write
+make
+cd -
+----
 . Edit run-workflow.sh
 +
-** Set the LAUNCH variable to the MPIX_Launch_Swift src/ directory (containing pkgIndex.tcl)
-. Run run-workflow.sh
+** Set the LAUNCH variable to the MPIX_Launch_Swift src/ directory
+   (containing pkgIndex.tcl)
+*** This allows STC to find the module
+** Set the EVPATH variable to the EVPath installation
+   (the directory specified in chaos_bootstrap.pl)
+*** This is needed so that the ADIOS-linked programs can find EVPath
+    at run time
+. Run ./run-workflow.sh +
+It should take 20 seconds or less, if it hangs,
+kill it and check for error messages.
