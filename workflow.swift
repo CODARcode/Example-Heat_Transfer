@@ -96,3 +96,7 @@ wait(ready) {
         run_stager();
     }
 }
+
+// Local Variables:
+// c-basic-offset: 4;
+// End:
