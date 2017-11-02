@@ -145,3 +145,7 @@ Follow directions here: +
 Follow directions here:
 +
 ** https://bitbucket.org/jmjwozniak/mpix_launch_swift
+. Edit run-workflow.sh
++
+** Set the LAUNCH variable to the MPIX_Launch_Swift src/ directory (containing pkgIndex.tcl)
+. Run run-workflow.sh
