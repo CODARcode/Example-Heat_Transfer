@@ -132,8 +132,8 @@ $ wget http://www.cc.gatech.edu/systems/projects/EVPath/chaos_bootstrap.pl
 $ ./chaos_bootstrap.pl -i
 ----
 +
-** Now edit chaos_build_config to remove the BUILDLIST entries after +
-evpath with a comment (%). Then:
+** Now edit chaos_build_config to remove the BUILDLIST entries after
+   evpath with a comment (%). Then:
 +
 ----
 $ perl ./chaos_build.pl
