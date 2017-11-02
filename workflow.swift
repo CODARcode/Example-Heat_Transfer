@@ -1,21 +1,30 @@
+
+/**
+   WORKFLOW.SWIFT
+*/
+
 import assert;
 import io;
 import launch;
 import string;
 import sys;
 
-string rmethod;
-void ready;
-int availproc;
+// Data transfer method: FLEXPATH, DATASPACES, MPI, or BP
+string rmethod = argv("s", "FLEXPATH");
 
+void ready;
+
+// Total worker processes in the run
+int availproc = turbine_workers();
+
+// Heat Transfer Processes
 int htproc_x = 4;
 int htproc_y = 3;
 int htproc = htproc_x * htproc_y;
+// Stage Write Processes
 int swproc = 3;
+// DataSpaces Processes
 int dsproc = 1;
-
-availproc = turbine_workers();
-rmethod = argv("s", "FLEXPATH");
 
 app(void signal) check_conf_exists () {
        "./check_conf_exists.sh"
