@@ -139,6 +139,8 @@ $ ./chaos_bootstrap.pl -i
 $ perl ./chaos_build.pl
 ----
 +
+NOTE: nnti will fail, that is OK.
++
 . Download/install ADIOS
 +
 ----
