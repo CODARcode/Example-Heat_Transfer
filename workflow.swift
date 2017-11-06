@@ -50,7 +50,7 @@ if(rmethod == "DATASPACES")
     printf("swift: received exit code: %d", exit_code3);
     if(exit_code3 != 0)
     {
-        printf("swift: The launched application did not succed.");
+        printf("swift: The launched application did not succeed.");
     }
     ready = check_conf_exists();
 }
