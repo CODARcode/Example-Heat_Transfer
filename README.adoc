@@ -192,3 +192,22 @@ cd -
 . Run ./run-workflow.sh +
 It should take 20 seconds or less, if it hangs,
 kill it and check for error messages.
+
+=== DataSpaces:
+
+. Download/install DataSpaces from:
++
+** Download from: +
+   http://personal.cac.rutgers.edu/TASSL/projects/data/download.html
++
+----
+./configure --prefix=... CC=mpicc FC=mpif90
+----
++
+. Put the DataSpaces bin directory in your PATH
+. Rebuild ADIOS: reconfigure with --with-dataspaces=...
+. If you already compiled the simulator (this directory) or stage_write,
+for each of them do: 'make clean ; make' (because ADIOS was rebuilt)
+. Edit heat_transfer.xml to enable method="DATASPACES" and disable
+the other methods.
+. Run ./run-workflow.sh + but provide more processes
