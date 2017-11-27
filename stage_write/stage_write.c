@@ -176,154 +176,6 @@ int processArgs(int argc, char ** argv)
 }
 
 
-int main (int argc, char ** argv) 
-{
-    int         err;
-    int         steps = 0, curr_step;
-    int         retval = 0;
-
-    double      tick, tock;
-    double      io_time = 0.0;
-    double      this_step_timestamp, prev_step_timestamp;
-    double      t1, t2, write_time, total_write_time;
-
-    MPI_Init (&argc, &argv);
-    //comm = MPI_COMM_WORLD;
-    //MPI_Comm_rank (comm, &rank);
-    //MPI_Comm_size (comm, &numproc);
-    MPI_Comm_rank (MPI_COMM_WORLD, &rank);
-    MPI_Comm_size (MPI_COMM_WORLD, &numproc);
-    MPI_Barrier(MPI_COMM_WORLD);
-
-    MPI_Comm_split(MPI_COMM_WORLD, 2, rank, &comm);	//color=2
-    MPI_Comm_rank (comm, &rank);
-    MPI_Comm_size (comm, &numproc);
-
-    if (rank == 0) tick = MPI_Wtime();
-
-    if (processArgs(argc, argv)) {
-        return 1;
-    }
-    
-    print0("Input stream            = %s\n", infilename);
-    print0("Output stream           = %s\n", outfilename);
-    print0("Read method             = %s (id=%d)\n", rmethodname, read_method);
-    print0("Read method parameters  = \"%s\"\n", rmethodparams);
-    print0("Write method            = %s\n", wmethodname);
-    print0("Write method parameters = \"%s\"\n", wmethodparams);
-    print0("Variable to transform   = \"%s\"\n", varnames);
-    print0("Transform parameters    = \"%s\"\n", transparams);
-    
-
-    err = adios_read_init_method(read_method, comm, rmethodparams);
-
-    if (!err) {
-        print0 ("%s\n", adios_errmsg());
-    }
-
-    adios_init_noxml(comm);
-
-    print0 ("Waiting to open stream %s...\n", infilename);
-    f = adios_read_open_stream (infilename, read_method, comm, 
-                                             ADIOS_LOCKMODE_ALL, timeout_sec);
-    if (adios_errno == err_file_not_found) 
-    {
-        print ("rank %d: Stream not found after waiting %d seconds: %s\n", 
-               rank, timeout_sec, adios_errmsg());
-        retval = adios_errno;
-    } 
-    else if (adios_errno == err_end_of_stream) 
-    {
-        print ("rank %d: Stream terminated before open. %s\n", rank, adios_errmsg());
-        retval = adios_errno;
-    } 
-    else if (f == NULL) {
-        print ("rank %d: Error at opening stream: %s\n", rank, adios_errmsg());
-        retval = adios_errno;
-    } 
-    else 
-    {
-        // process steps here... 
-        if (f->current_step != 0) {
-            print ("rank %d: WARNING: First %d steps were missed by open.\n", 
-                   rank, f->current_step);
-        }
-
-        prev_step_timestamp = MPI_Wtime();
-        while (1)
-        {
-            steps++; // start counting from 1
-
-            print0 ("File info:\n");
-            print0 ("  current step:   %d\n", f->current_step);
-            print0 ("  last step:      %d\n", f->last_step);
-            print0 ("  # of variables: %d:\n", f->nvars);
-
-            if (rank == 0) {
-                this_step_timestamp = MPI_Wtime();
-                printf("step gap: %lf\n", this_step_timestamp - prev_step_timestamp);
-                prev_step_timestamp = this_step_timestamp;
-            }
-
-            t1 = MPI_Wtime();
-            retval = process_metadata(steps);
-            if (retval) break;
-            t2 = MPI_Wtime();
-            if(rank==0) printf("stage_write rank %d time to process metadata %lf\n", rank, t2-t1);
-
-            t1 = MPI_Wtime();
-            retval = read_write(steps, &write_time);
-            if (retval) break;
-            t2 = MPI_Wtime();
-            io_time += t2-t1;
-            if(rank==0) printf("stage_write rank %d time to read write %lf\n", rank, t2-t1);
-
-            // advance to 1) next available step with 2) blocking wait 
-            curr_step = f->current_step; // save for final bye print
-            t1 = MPI_Wtime();
-            adios_advance_step (f, 0, timeout_sec);
-            t2 = MPI_Wtime();
-            if(rank==0) printf("stage_write rank %d time to advance step %lf\n", rank, t2-t1);
-
-            if (adios_errno == err_end_of_stream) 
-            {
-                break; // quit while loop
-            }
-            else if (adios_errno == err_step_notready) 
-            {
-                print ("rank %d: No new step arrived within the timeout. Quit. %s\n", 
-                        rank, adios_errmsg());
-                break; // quit while loop
-            } 
-            else if (f->current_step != curr_step+1) 
-            {
-                // we missed some steps
-                print ("rank %d: WARNING: steps %d..%d were missed when advancing.\n", 
-                        rank, curr_step+1, f->current_step-1);
-            }
-
-        }
-
-        adios_read_close (f);
-        if(readbuf) free(readbuf);
-        if(varinfo) free(varinfo);
-        if(group_name) free(group_name);
-    } 
-    print0 ("Bye after processing %d steps\n", steps);
-
-    adios_read_finalize_method (read_method);
-    adios_finalize (rank);
-
-    if (rank == 0) tock = MPI_Wtime();
-    MPI_Reduce(&write_time, &total_write_time, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
-    print0("Stage_write runtime: %lf\nStage_write io time: %lf\nStage_write write time: %lf\n", tock-tick, io_time, total_write_time);
-
-    MPI_Finalize ();
-
-    return retval;
-}
-
-
 int process_metadata(int step)
 {
     int retval = 0;
@@ -553,6 +405,157 @@ int read_write(int step, double *write_time)
 		current_idx++;
 		time_step_count = 0;
     }
+
+    return retval;
+}
+
+
+int main (int argc, char ** argv) 
+{
+    int         err;
+    int         steps = 0, curr_step;
+    int         retval = 0;
+
+    double      tick, tock;
+    double      io_time = 0.0;
+    double      this_step_timestamp, prev_step_timestamp;
+    double      t1, t2, write_time, total_write_time;
+
+    MPI_Init (&argc, &argv);
+    //comm = MPI_COMM_WORLD;
+    //MPI_Comm_rank (comm, &rank);
+    //MPI_Comm_size (comm, &numproc);
+    MPI_Comm_rank (MPI_COMM_WORLD, &rank);
+    MPI_Comm_size (MPI_COMM_WORLD, &numproc);
+    MPI_Barrier(MPI_COMM_WORLD);
+
+    MPI_Comm_split(MPI_COMM_WORLD, 2, rank, &comm);	//color=2
+    MPI_Comm_rank (comm, &rank);
+    MPI_Comm_size (comm, &numproc);
+
+    if (rank == 0) tick = MPI_Wtime();
+
+    if (processArgs(argc, argv)) {
+        return 1;
+    }
+    
+    print0("Input stream            = %s\n", infilename);
+    print0("Output stream           = %s\n", outfilename);
+    print0("Read method             = %s (id=%d)\n", rmethodname, read_method);
+    print0("Read method parameters  = \"%s\"\n", rmethodparams);
+    print0("Write method            = %s\n", wmethodname);
+    print0("Write method parameters = \"%s\"\n", wmethodparams);
+    print0("Variable to transform   = \"%s\"\n", varnames);
+    print0("Transform parameters    = \"%s\"\n", transparams);
+    
+
+    err = adios_read_init_method(read_method, comm, rmethodparams);
+
+    if (!err) {
+        print0 ("%s\n", adios_errmsg());
+    }
+
+    adios_init_noxml(comm);
+
+    print0 ("Waiting to open stream %s...\n", infilename);
+    f = adios_read_open_stream (infilename, read_method, comm, 
+                                             ADIOS_LOCKMODE_ALL, timeout_sec);
+    if (adios_errno == err_file_not_found) 
+    {
+        print ("rank %d: Stream not found after waiting %d seconds: %s\n", 
+               rank, timeout_sec, adios_errmsg());
+        retval = adios_errno;
+    } 
+    else if (adios_errno == err_end_of_stream) 
+    {
+        print ("rank %d: Stream terminated before open. %s\n", rank, adios_errmsg());
+        retval = adios_errno;
+    } 
+    else if (f == NULL) {
+        print ("rank %d: Error at opening stream: %s\n", rank, adios_errmsg());
+        retval = adios_errno;
+    } 
+    else 
+    {
+        // process steps here... 
+        if (f->current_step != 0) {
+            print ("rank %d: WARNING: First %d steps were missed by open.\n", 
+                   rank, f->current_step);
+        }
+
+        prev_step_timestamp = MPI_Wtime();
+        while (1)
+        {
+            steps++; // start counting from 1
+
+            print0 ("File info:\n");
+            print0 ("  current step:   %d\n", f->current_step);
+            print0 ("  last step:      %d\n", f->last_step);
+            print0 ("  # of variables: %d:\n", f->nvars);
+
+            if (rank == 0) {
+                this_step_timestamp = MPI_Wtime();
+                printf("step gap: %lf\n", this_step_timestamp - prev_step_timestamp);
+                prev_step_timestamp = this_step_timestamp;
+            }
+
+            t1 = MPI_Wtime();
+            retval = process_metadata(steps);
+            if (retval) break;
+            t2 = MPI_Wtime();
+            if(rank==0) printf("stage_write rank %d time to process metadata %lf\n", rank, t2-t1);
+
+            t1 = MPI_Wtime();
+            retval = read_write(steps, &write_time);
+            if (retval) break;
+            t2 = MPI_Wtime();
+            io_time += t2-t1;
+            if(rank==0) printf("stage_write rank %d time to read write %lf\n", rank, t2-t1);
+
+            // advance to 1) next available step with 2) blocking wait 
+            curr_step = f->current_step; // save for final bye print
+            t1 = MPI_Wtime();
+            adios_advance_step (f, 0, timeout_sec);
+            t2 = MPI_Wtime();
+            if(rank==0) printf("stage_write rank %d time to advance step %lf\n", rank, t2-t1);
+
+            if (adios_errno == err_end_of_stream) 
+            {
+                if(rank==0) printf("stage_write rank 0 end of stream received\n");
+                break; // quit while loop
+            }
+            else if (adios_errno == err_step_notready) 
+            {
+                print ("rank %d: No new step arrived within the timeout. Quit. %s\n", 
+                        rank, adios_errmsg());
+                break; // quit while loop
+            } 
+            else if (f->current_step != curr_step+1) 
+            {
+                // we missed some steps
+                print ("rank %d: WARNING: steps %d..%d were missed when advancing.\n", 
+                        rank, curr_step+1, f->current_step-1);
+            }
+
+        }
+
+        adios_read_close (f);
+        if(readbuf) free(readbuf);
+        if(varinfo) free(varinfo);
+        if(group_name) free(group_name);
+    } 
+    print0 ("Bye after processing %d steps\n", steps);
+
+    adios_read_finalize_method (read_method);
+    adios_finalize (rank);
+
+    if (rank == 0) tock = MPI_Wtime();
+    if(rank==0) printf("stage_write rank 0 adios_finalize done.\n");
+    //MPI_Reduce(&write_time, &total_write_time, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
+    print0("Stage_write rank 0 runtime: %lf\nStage_write rank 0 io time: %lf\nStage_write rank 0 write time: %lf\n", tock-tick, io_time, write_time);
+
+    MPI_Finalize ();
+    if(rank==0) printf("stage_write rank 0 MPI_Finalize done. Exiting..\n");
 
     return retval;
 }
