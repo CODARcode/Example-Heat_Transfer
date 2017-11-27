@@ -1,21 +1,30 @@
+
+/**
+   WORKFLOW.SWIFT
+*/
+
 import assert;
 import io;
 import launch;
 import string;
 import sys;
 
-string rmethod;
-void ready;
-int availproc;
+// Data transfer method: FLEXPATH, DATASPACES, MPI, or BP
+string rmethod = argv("s", "FLEXPATH");
 
+void ready;
+
+// Total worker processes in the run
+int availproc = turbine_workers();
+
+// Heat Transfer Processes
 int htproc_x = 4;
 int htproc_y = 3;
 int htproc = htproc_x * htproc_y;
+// Stage Write Processes
 int swproc = 3;
+// DataSpaces Processes
 int dsproc = 1;
-
-availproc = turbine_workers();
-rmethod = argv("s", "FLEXPATH");
 
 app(void signal) check_conf_exists () {
        "./check_conf_exists.sh"
@@ -25,9 +34,15 @@ app(void signal) dummy () {
 	"true"
 }
 
+check_procs(int minimum_proc) {
+    assert(availproc >= minimum_proc,
+           "Workflow cannot run: Not enough processes assigned. " +
+           "Need " + minimum_proc + " worker processes.");
+}
+
 if(rmethod == "DATASPACES")
 {
-    assert(availproc >= (htproc + swproc + dsproc), "Not enough processes assigned. Workflow cannot run.");
+    check_procs(htproc + swproc + dsproc);
     program3 = "dataspaces_server";
     arguments3 = split("-s %d -c %d" % (dsproc, (htproc + swproc)), " ");
     printf("swift: launching %s", program3);
@@ -35,13 +50,13 @@ if(rmethod == "DATASPACES")
     printf("swift: received exit code: %d", exit_code3);
     if(exit_code3 != 0)
     {
-        printf("swift: The launched application did not succed.");
+        printf("swift: The launched application did not succeed.");
     }
     ready = check_conf_exists();
 }
 else
 {
-    assert(availproc >= (htproc + swproc), "Not enough processes assigned. Workflow cannot run.");
+    check_procs(htproc + swproc);
     ready = dummy();    
 }
 
@@ -81,3 +96,7 @@ wait(ready) {
         run_stager();
     }
 }
+
+// Local Variables:
+// c-basic-offset: 4;
+// End:

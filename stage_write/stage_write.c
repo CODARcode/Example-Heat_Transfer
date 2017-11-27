@@ -358,10 +358,6 @@ int process_metadata(int step)
     return retval;
 }
 
-#define MAX_TIMESTEPS_PER_FILE (3*1024)
-int  time_step_count = 0;
-int  current_idx = 0;
-char currentfile[256];
 
 int read_write(int step, double *write_time)
 {
@@ -373,8 +369,10 @@ int read_write(int step, double *write_time)
     sprintf(currentfile,"%s%d",outfilename,current_idx);
 
     // open output file
-    adios_open (&fh, group_name, currentfile, (time_step_count==0 ? "w" : "a"), comm);
-    adios_group_size (fh, write_total, &total_size);
+    retval = adios_open (&fh, group_name, outfilename, (step==1 ? "w" : "a"), comm);
+	if (retval!=0) return retval;
+    retval = adios_group_size (fh, write_total, &total_size);
+	if (retval!=0) return retval;
     
     for (i=0; i<f->nvars; i++) 
     {
@@ -384,28 +382,29 @@ int read_write(int step, double *write_time)
             ADIOS_SELECTION *sel = adios_selection_boundingbox (varinfo[i].v->ndim,
                     varinfo[i].start, 
                     varinfo[i].count);
-            adios_schedule_read_byid (f, sel, i, 0, 1, readbuf);
-            adios_perform_reads (f, 1);   
+			if (sel==NULL) return -1;
+            retval = adios_schedule_read_byid (f, sel, i, 0, 1, readbuf);
+			if (retval!=0) return retval;
+            retval = adios_perform_reads (f, 1);   
+			if (retval!=0) return retval;
 
 
             // write (buffer) variable
-            // print ("rank %d: Write variable %d: %s\n", rank, i, f->var_namelist[i]); 
-            adios_write(fh, f->var_namelist[i], readbuf);
+            print ("rank %d: Write variable %d: %s\n", rank, i, f->var_namelist[i]); 
+            retval = adios_write(fh, f->var_namelist[i], readbuf);
+			if (retval!=0) return retval;
         }
     }
 
     adios_release_step (f); // this step is no longer needed to be locked in staging area
+    if (retval!=0) return retval;
     t1 = MPI_Wtime();
     adios_close (fh); // write out output buffer to file
     t2 = MPI_Wtime();
 
     *write_time = *write_time + t2-t1;
 
-    if ((++time_step_count)>=MAX_TIMESTEPS_PER_FILE) {
-		current_idx++;
-		time_step_count = 0;
-    }
-
+    retval = adios_close (fh); // write out output buffer to file
     return retval;
 }
 

@@ -1,6 +1,10 @@
 
 = Running the Heat Transfer/Reduction pipeline with Swift
 
+////
+This lead syntax does not work with the asciidoc command line tool
+////
+
 [.lead]
 This example shows how to run the heat transfer/reduction pipeline with Swift. This application works as shown in the figure, with the grey callouts indicating user-controlled options for the program.
 
@@ -113,3 +117,97 @@ arguments2 = split("heat.bp staged.bp FLEXPATH \"\" MPI \"\" \"T,dt\" \"ZFP:accu
 We have described how to execute a single instance of the pipeline. The *Cheetah* system allows you to run a *campaign* involving a set of such executions, each with different configuration parameters.
 
 Instructions on how to run with Cheetah are https://github.com/CODARcode/cheetah[on a separate page].
+
+== Developer quick start notes
+
+These notes are for developers that want to work from git clones, not Spack.
+
+. Download/install EVPATH/FlexPath +
+Directions here: https://www.cc.gatech.edu/systems/projects/EVPath
++
+----
+$ mkdir evpath-build
+$ cd evpath-build
+$ wget http://www.cc.gatech.edu/systems/projects/EVPath/chaos_bootstrap.pl
+$ ./chaos_bootstrap.pl -i
+----
++
+** Now edit chaos_build_config to remove the BUILDLIST entries after
+   evpath with a comment (%). Then:
++
+----
+$ perl ./chaos_build.pl
+----
++
+NOTE: nnti will fail, that is OK.
++
+. Download/install ADIOS
++
+----
+$ wget http://users.nccs.gov/~pnorbert/adios-1.11.0.tar.gz
+$ ./configure --prefix=... --with-flexpath=...
+----
++
+Then put the ADIOS bin/ directory in your PATH
++
+. Clone/install Swift/T
++
+----
+$ git clone git@github.com:swift-lang/swift-t.git # or
+$ git clone https://github.com/swift-lang/swift-t.git
+----
++
+Follow directions here:
++
+** http://swift-lang.github.io/swift-t/guide.html#Build_configuration or
+** http://swift-lang.github.io/swift-t/guide.html#_from_source
++
+Then put the STC and Turbine bin/ directories in your PATH
++
+. Install the MPIX_Launch module: +
+Follow directions here:
++
+** https://bitbucket.org/jmjwozniak/mpix_launch_swift
+. Build the heat_transfer simulator code:
++
+----
+make
+----
+. Build the stage_write program
++
+----
+cd stage_write
+make
+cd -
+----
+. Edit run-workflow.sh
++
+** Set the LAUNCH variable to the MPIX_Launch_Swift src/ directory
+   (containing pkgIndex.tcl)
+*** This allows STC to find the module
+** Set the EVPATH variable to the EVPath installation
+   (the directory specified in chaos_bootstrap.pl)
+*** This is needed so that the ADIOS-linked programs can find EVPath
+    at run time
+. Run ./run-workflow.sh +
+It should take 20 seconds or less, if it hangs,
+kill it and check for error messages.
+
+=== DataSpaces:
+
+. Download/install DataSpaces from:
++
+** Download from: +
+   http://personal.cac.rutgers.edu/TASSL/projects/data/download.html
++
+----
+./configure --prefix=... CC=mpicc FC=mpif90
+----
++
+. Put the DataSpaces bin directory in your PATH
+. Rebuild ADIOS: reconfigure with --with-dataspaces=...
+. If you already compiled the simulator (this directory) or stage_write,
+for each of them do: 'make clean ; make' (because ADIOS was rebuilt)
+. Edit heat_transfer.xml to enable method="DATASPACES" and disable
+the other methods.
+. Run ./run-workflow.sh + but provide more processes

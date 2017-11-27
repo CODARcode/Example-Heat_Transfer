@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -eu
 
 if [ ${#} -lt 1 ]
@@ -23,8 +23,21 @@ then
   fi
 fi
 
-# USER: Set this to the correct location:
-LAUNCH=
+# USER: Set these to the correct locations:
+LAUNCH=x
+EVPATH=x
+
+# Sanity check user editing
+for D in LAUNCH EVPATH
+do
+  if ! [ -d ${!D} ]
+  then
+    echo "Bad directory: $D=${!D}"
+    exit 1
+  fi
+done
+
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH:-}:$EVPATH/lib
 
 MACHINE=${MACHINE:-}
 
