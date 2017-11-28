@@ -353,7 +353,10 @@ int process_metadata(int step)
         int  attr_size;
         for (i=0; i<f->nattrs; i++) 
         {
-            adios_get_attr_byid (f, i, &attr_type, &attr_size, &attr_value);
+            if (0 != adios_get_attr_byid (f, i, &attr_type, &attr_size, &attr_value)) {
+                fprintf(stderr, "Could not get attribute with id %d at timestep %d\n", i, step);
+                continue;
+            }
             attr_value_str = (char *)value_to_string (attr_type, attr_value, 0);
             getbasename (f->attr_namelist[i], &vpath, &vname);
             if (vpath && !strcmp(vpath,"/__adios__")) { 
