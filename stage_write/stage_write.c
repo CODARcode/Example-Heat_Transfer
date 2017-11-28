@@ -366,8 +366,6 @@ int read_write(int step, double *write_time)
     uint64_t total_size;
     double t1, t2;
 
-    sprintf(currentfile,"%s%d",outfilename,current_idx);
-
     // open output file
     retval = adios_open (&fh, group_name, outfilename, (step==1 ? "w" : "a"), comm);
 	if (retval!=0) return retval;
@@ -399,12 +397,10 @@ int read_write(int step, double *write_time)
     adios_release_step (f); // this step is no longer needed to be locked in staging area
     if (retval!=0) return retval;
     t1 = MPI_Wtime();
-    adios_close (fh); // write out output buffer to file
+    return adios_close (fh); // write out output buffer to file
     t2 = MPI_Wtime();
-
     *write_time = *write_time + t2-t1;
 
-    retval = adios_close (fh); // write out output buffer to file
     return retval;
 }
 
