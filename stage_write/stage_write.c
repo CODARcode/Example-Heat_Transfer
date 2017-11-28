@@ -192,9 +192,11 @@ void cleanup_step ()
         adios_free_varinfo(varinfo[i].v);
     }
     free (varinfo);
+    varinfo = NULL;
     adios_delete_vardefs (gh);
     adios_delete_attrdefs (gh);
     free (readbuf);
+    readbuf = NULL;
 }
 
 
