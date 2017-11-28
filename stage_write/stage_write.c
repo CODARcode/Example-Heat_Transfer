@@ -5,14 +5,14 @@
  */
 
 
-/* Staged write example code.
-   Assumptions:
-     - one output step fits into the memory of the staged writer.
-       Actually, this means, even more memory is needed than the size of output.
-       We need to read each variable while also buffering all of them for output.
-     - output steps contain the same variable set (no changes in variables)
-     - attributes are the same for all steps (will write only once here)
-*/
+/*  Staged write example code.
+    Assumptions:
+    - one output step fits into the memory of the staged writer.
+    Actually, this means, even more memory is needed than the size of output.
+    We need to read each variable while also buffering all of them for output.
+    - output steps contain the same variable set (no changes in variables)
+    - attributes are the same for all steps (will write only once here)
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -43,7 +43,7 @@ enum ADIOS_READ_METHOD read_method;
 static const int max_read_buffer_size  = 1024*1024*1024;
 static const int max_write_buffer_size = 1024*1024*1024;
 
-static int timeout_sec = 10; // will stop if no data found for this time (-1: never stop)
+static int timeout_sec = 300; // will stop if no data found for this time (-1: never stop)
 
 typedef struct {
     ADIOS_VARINFO * v;
@@ -67,30 +67,31 @@ char       *readbuf; // read buffer
 int         decomp_values[10];
 
 
+void cleanup_step ();
 int process_metadata(int step);
 int read_write(int step, double*);
 
 void printUsage(char *prgname)
 {
     print0("Usage: %s input output rmethod \"params\" wmethod \"params\" [names params <decomposition>]\n"
-           "    input   Input stream path\n"
-           "    output  Output file path\n"
-           "    rmethod ADIOS method to read with\n"
-           "            Supported read methods: BP, DATASPACES, DIMES, FLEXPATH\n"
-           "    params  Read method parameters (in quotes; comma-separated list)\n"
-           "    wmethod ADIOS method to write with\n"
-           "    params  Write method parameters (in quotes; comma-separated list)\n"
-           "    names   List of variables to apply transforms(compression) (in quotes; comma-separated list)\n"
-           "    params  Transform parameters (in quotes)\n"
-           "    <decomposition>    list of numbers e.g. 32 8 4\n"
-           "            Decomposition values in each dimension of an array\n"
-           "            The product of these number must be less then the number\n"
-           "            of processes. Processes whose rank is higher than the\n"
-           "            product, will not write anything.\n"
-           "               Arrays with less dimensions than the number of values,\n"
-           "            will be decomposed with using the appropriate number of\n"
-           "            values.\n"
-        ,prgname);
+            "    input   Input stream path\n"
+            "    output  Output file path\n"
+            "    rmethod ADIOS method to read with\n"
+            "            Supported read methods: BP, DATASPACES, DIMES, FLEXPATH\n"
+            "    params  Read method parameters (in quotes; comma-separated list)\n"
+            "    wmethod ADIOS method to write with\n"
+            "    params  Write method parameters (in quotes; comma-separated list)\n"
+            "    names   List of variables to apply transforms(compression) (in quotes; comma-separated list)\n"
+            "    params  Transform parameters (in quotes)\n"
+            "    <decomposition>    list of numbers e.g. 32 8 4\n"
+            "            Decomposition values in each dimension of an array\n"
+            "            The product of these number must be less then the number\n"
+            "            of processes. Processes whose rank is higher than the\n"
+            "            product, will not write anything.\n"
+            "               Arrays with less dimensions than the number of values,\n"
+            "            will be decomposed with using the appropriate number of\n"
+            "            values.\n"
+            ,prgname);
 }
 
 
@@ -110,7 +111,7 @@ int processArgs(int argc, char ** argv)
     strncpy(wmethodparams,  argv[6], sizeof(wmethodparams));
     if (argc>7) strncpy(varnames,       argv[7], sizeof(varnames));
     if (argc>8) strncpy(transparams,    argv[8], sizeof(transparams));
-    
+
     nd = 0;
     j = 9;
     while (argc > j && j<15) { // get max 6 dimensions
@@ -164,15 +165,36 @@ int processArgs(int argc, char ** argv)
     } else {
         print0 ("ERROR: Supported read methods are: BP, DATASPACES, DIMES, FLEXPATH. You selected %s\n", rmethodname);
     }
-    
+
     if (!strcmp(rmethodparams,"")) {
         strcpy (rmethodparams, "max_chunk_size=100; "
-                               "app_id =32767; \n"
-                               "verbose= 3;"
-                               "poll_interval  =  100;");
+                "app_id =32767; \n"
+                "verbose= 3;"
+                "poll_interval  =  100;");
     }
 
     return 0;
+}
+
+
+// cleanup all info from previous step except
+// do
+//   remove all variable and attribute definitions from output group
+//   free all varinfo (will be inquired again at next step)
+//   free read buffer (required size may change at next step)
+// do NOT 
+//   destroy group
+//
+void cleanup_step ()
+{
+    int i;
+    for (i=0; i<f->nvars; i++) {
+        adios_free_varinfo(varinfo[i].v);
+    }
+    free (varinfo);
+    adios_delete_vardefs (gh);
+    adios_delete_attrdefs (gh);
+    free (readbuf);
 }
 
 
@@ -185,22 +207,15 @@ int process_metadata(int step)
     ADIOS_VARINFO *v; // shortcut pointer
     char     ** group_namelist; // name(s) of ADIOS group(s)
 
+    if (step == 1) {
+        /* First step processing */
 
-    if (step > 1)
-    {
-        // right now, nothing to prepare in later steps
-        // print("Step %d. return immediately\n",step);
-        return 0;
+        // Get group name, then declare the group for output
+        adios_get_grouplist(f, &group_namelist);
+        group_name = strdup (group_namelist[0]);
+        print0("Group name is %s\n", group_name);
+        adios_declare_group(&gh,group_name,"",adios_stat_full);
     }
-
-    /* First step processing */
-
-    // Get group name, then declare the group for output
-    adios_get_grouplist(f, &group_namelist);
-    group_name = strdup (group_namelist[0]);
-    print0("Group name is %s\n", group_name);
-    adios_declare_group(&gh,group_name,"",adios_stat_full);
-
 
     varinfo = (VarInfo *) malloc (sizeof(VarInfo) * f->nvars);
     if (!varinfo) {
@@ -220,7 +235,7 @@ int process_metadata(int step)
         v = varinfo[i].v; // just a shortcut
         if (v == NULL) {
             print ("rank %d: ERROR: Variable %s inquiry failed: %s\n", 
-                   rank, f->var_namelist[i], adios_errmsg());
+                    rank, f->var_namelist[i], adios_errmsg());
             return 1;
         }
 
@@ -237,7 +252,7 @@ int process_metadata(int step)
 
         // determine subset we will write
         decompose (numproc, rank, v->ndim, v->dims, decomp_values,
-                   varinfo[i].count, varinfo[i].start, &sum_count);
+                varinfo[i].count, varinfo[i].start, &sum_count);
         varinfo[i].writesize = sum_count * adios_type_size(v->type, v->value);
 
         if (varinfo[i].writesize != 0) {
@@ -255,9 +270,11 @@ int process_metadata(int step)
                 "but max is set to %d\n", rank, bufsize, max_write_buffer_size);
         return 1;
     }
-    print0 ("Rank %d: allocate %" PRIu64 " MB for output buffer\n", rank, bufsize/1048576+1);
-    adios_set_max_buffer_size (bufsize/1048576+1); 
 
+    if (step == 1) {
+        print0 ("Rank %d: allocate %" PRIu64 " MB for output buffer\n", rank, bufsize/1048576+1);
+        adios_set_max_buffer_size (bufsize/1048576+1); 
+    }
     // allocate read buffer
     bufsize = largest_block + 128;
     if (bufsize > max_read_buffer_size) {
@@ -269,15 +286,16 @@ int process_metadata(int step)
     readbuf = (char *) malloc ((size_t)bufsize);
     if (!readbuf) {
         print ("ERROR: rank %d: cannot allocate %" PRIu64 " bytes for read buffer\n",
-               rank, bufsize);
+                rank, bufsize);
         return 1;
     }
 
     // Select output method
-    adios_select_method (gh, wmethodname, wmethodparams, "");
+    if (step == 1)
+        adios_select_method (gh, wmethodname, wmethodparams, "");
 
-	// TAHSIN
-	//adios_set_time_aggregation(gh,64*1024*1024,0);
+    // TAHSIN
+    //adios_set_time_aggregation(gh,64*1024*1024,0);
 
     // Define variables for output based on decomposition
     char *vpath, *vname;
@@ -294,11 +312,9 @@ int process_metadata(int step)
                 int64s_to_str (v->ndim, varinfo[i].count, ldims);
                 int64s_to_str (v->ndim, varinfo[i].start, offs);
 
-		/*
                 print ("rank %d: Define variable path=\"%s\" name=\"%s\"  "
-                       "gdims=%s  ldims=%s  offs=%s\n", 
-                       rank, vpath, vname, gdims, ldims, offs);
-		*/
+                        "gdims=%s  ldims=%s  offs=%s\n", 
+                        rank, vpath, vname, gdims, ldims, offs);
 
                 int64_t var_id;
                 var_id = adios_define_var (gh, vname, vpath, v->type, ldims, gdims, offs);
@@ -318,9 +334,8 @@ int process_metadata(int step)
             }
             else 
             {
-		/*
                 print ("rank %d: Define scalar path=\"%s\" name=\"%s\"\n",
-                       rank, vpath, vname); */
+                        rank, vpath, vname); 
 
                 adios_define_var (gh, vname, vpath, v->type, "", "", "");
             }
@@ -368,10 +383,10 @@ int read_write(int step, double *write_time)
 
     // open output file
     retval = adios_open (&fh, group_name, outfilename, (step==1 ? "w" : "a"), comm);
-	if (retval!=0) return retval;
+    if (retval!=0) return retval;
     retval = adios_group_size (fh, write_total, &total_size);
-	if (retval!=0) return retval;
-    
+    if (retval!=0) return retval;
+
     for (i=0; i<f->nvars; i++) 
     {
         if (varinfo[i].writesize != 0) {
@@ -380,17 +395,17 @@ int read_write(int step, double *write_time)
             ADIOS_SELECTION *sel = adios_selection_boundingbox (varinfo[i].v->ndim,
                     varinfo[i].start, 
                     varinfo[i].count);
-			if (sel==NULL) return -1;
+            if (sel==NULL) return -1;
             retval = adios_schedule_read_byid (f, sel, i, 0, 1, readbuf);
-			if (retval!=0) return retval;
+            if (retval!=0) return retval;
             retval = adios_perform_reads (f, 1);   
-			if (retval!=0) return retval;
+            if (retval!=0) return retval;
 
 
             // write (buffer) variable
             print ("rank %d: Write variable %d: %s\n", rank, i, f->var_namelist[i]); 
             retval = adios_write(fh, f->var_namelist[i], readbuf);
-			if (retval!=0) return retval;
+            if (retval!=0) return retval;
         }
     }
 
@@ -433,7 +448,7 @@ int main (int argc, char ** argv)
     if (processArgs(argc, argv)) {
         return 1;
     }
-    
+
     print0("Input stream            = %s\n", infilename);
     print0("Output stream           = %s\n", outfilename);
     print0("Read method             = %s (id=%d)\n", rmethodname, read_method);
@@ -442,7 +457,7 @@ int main (int argc, char ** argv)
     print0("Write method parameters = \"%s\"\n", wmethodparams);
     print0("Variable to transform   = \"%s\"\n", varnames);
     print0("Transform parameters    = \"%s\"\n", transparams);
-    
+
 
     err = adios_read_init_method(read_method, comm, rmethodparams);
 
@@ -454,11 +469,11 @@ int main (int argc, char ** argv)
 
     print0 ("Waiting to open stream %s...\n", infilename);
     f = adios_read_open_stream (infilename, read_method, comm, 
-                                             ADIOS_LOCKMODE_ALL, timeout_sec);
+            ADIOS_LOCKMODE_ALL, timeout_sec);
     if (adios_errno == err_file_not_found) 
     {
         print ("rank %d: Stream not found after waiting %d seconds: %s\n", 
-               rank, timeout_sec, adios_errmsg());
+                rank, timeout_sec, adios_errmsg());
         retval = adios_errno;
     } 
     else if (adios_errno == err_end_of_stream) 
@@ -475,7 +490,7 @@ int main (int argc, char ** argv)
         // process steps here... 
         if (f->current_step != 0) {
             print ("rank %d: WARNING: First %d steps were missed by open.\n", 
-                   rank, f->current_step);
+                    rank, f->current_step);
         }
 
         prev_step_timestamp = MPI_Wtime();
@@ -510,6 +525,7 @@ int main (int argc, char ** argv)
             // advance to 1) next available step with 2) blocking wait 
             curr_step = f->current_step; // save for final bye print
             t1 = MPI_Wtime();
+            cleanup_step();
             adios_advance_step (f, 0, timeout_sec);
             t2 = MPI_Wtime();
             if(rank==0) printf("stage_write rank %d time to advance step %lf\n", rank, t2-t1);
