@@ -122,6 +122,7 @@ Instructions on how to run with Cheetah are https://github.com/CODARcode/cheetah
 
 These notes are for developers that want to work from git clones, not Spack.
 
+. Install all APT packages in the <<user-content-installation,Installation>> section above (or equivalent on your OS)
 . Download/install EVPATH/FlexPath +
 Directions here: https://www.cc.gatech.edu/systems/projects/EVPath
 +
