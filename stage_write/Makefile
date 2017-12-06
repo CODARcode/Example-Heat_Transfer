@@ -17,6 +17,7 @@ OBJS = utils.o decompose_block.o
 
 stage_write: ${OBJS} stage_write.o
 	${CC} ${LDFLAGS} -o stage_write ${OBJS} stage_write.o ${ADIOS_CLIB}
+	@echo "Done"
 
 test_decompose: ${OBJS} test_decompose.o 
 	${CC} ${LDFLAGS} -o test_decompose ${OBJS} test_decompose.o ${ADIOS_CLIB}
