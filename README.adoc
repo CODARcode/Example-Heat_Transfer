@@ -146,6 +146,7 @@ NOTE: nnti will fail, that is OK.
 +
 ----
 $ wget http://users.nccs.gov/~pnorbert/adios-1.11.0.tar.gz
+$ export LIBS=-pthread
 $ ./configure --prefix=... --with-flexpath=...
 ----
 +
