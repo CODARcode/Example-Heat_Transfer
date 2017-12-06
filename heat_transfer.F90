@@ -134,12 +134,7 @@ program heat_transfer
     call MPI_Barrier (app_comm, ierr)
     tend = MPI_Wtime()
 
-    call mpi_reduce(write_time,write_total_time,1,mpi_double_precision,MPI_MAX,0,app_comm,ierr)
-    if (rank==0) then
-        print '("Total runtime = ",f12.3,"s")', tend-tstart
-        print '("Total io time = ",f12.3,"s")', io_total_time
-        print '("Total write time = ",f12.3,"s")', write_total_time
-    endif
+    if (rank==0) print '("Rank 0 total runtime = ",f12.3,"s")', tend-tstart
 
     call MPI_Finalize (ierr)
 end program heat_transfer
