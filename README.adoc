@@ -191,8 +191,12 @@ cd -
 *** This is needed so that the ADIOS-linked programs can find EVPath
     at run time
 . Run ./run-workflow.sh +
-It should take 20 seconds or less, if it hangs,
-kill it and check for error messages.
++
+----
+$ ./run-workflow.sh 16 FLEXPATH
+----
++
+It should take 20 seconds or less, if it hangs, kill it and check for error messages.
 
 === DataSpaces:
 
