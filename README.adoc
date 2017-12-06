@@ -123,6 +123,17 @@ Instructions on how to run with Cheetah are https://github.com/CODARcode/cheetah
 These notes are for developers that want to work from git clones, not Spack.
 
 . Install all APT packages in the <<user-content-installation,Installation>> section above (or equivalent on your OS)
++
+----
+$ sudo apt-get update
+$ sudo apt-get -y install gcc g++ gfortran mpich
+$ sudo apt-get -y install tcl tcl-dev swig zsh ant
+$ sudo apt-get -y install build-essential autoconf
+$ sudo apt-get -y install libxml2 libxml2-dev gsoap
+$ sudo apt-get -y install bison flex
+$ sudo apt-get -y install cmake subversion git
+----
++
 . Download/install EVPATH/FlexPath +
 Directions here: https://www.cc.gatech.edu/systems/projects/EVPath
 +
@@ -130,9 +141,10 @@ Directions here: https://www.cc.gatech.edu/systems/projects/EVPath
 $ mkdir evpath-build
 $ cd evpath-build
 $ wget http://www.cc.gatech.edu/systems/projects/EVPath/chaos_bootstrap.pl
-$ ./chaos_bootstrap.pl -i
+$ perl ./chaos_bootstrap.pl -i
 ----
 +
+** create the evpath installation directory in advance, and Specify it when running "perl ./chaos_bootstrap.pl -i"
 ** Now edit chaos_build_config to remove the BUILDLIST entries after
    evpath with a comment (%). Then:
 +
