@@ -17,7 +17,6 @@ OBJS = utils.o decompose_block.o
 
 stage_write: ${OBJS} stage_write.o
 	${CC} ${LDFLAGS} -o stage_write ${OBJS} stage_write.o ${ADIOS_CLIB}
-	cp stage_write /lustre/atlas/proj-shared/csc143/kmehta/heat-transfer-codar-fork/stage_write/.
 
 test_decompose: ${OBJS} test_decompose.o 
 	${CC} ${LDFLAGS} -o test_decompose ${OBJS} test_decompose.o ${ADIOS_CLIB}

@@ -1,5 +1,6 @@
 CC=cc
-FC=tau_f90.sh
+FC=ftn
+#FC=tau_f90.sh
 CFLAGS=-g -O3
 FFLAGS=-g -O3 -Wall -fcheck=bounds #-fcheck=array-temps
 
@@ -57,7 +58,6 @@ adios2_tau: heat_vars.o io_adios.o heat_transfer.o
 	@echo $(shell tau_cc.sh -tau:showlibs)
 	@echo "end tau options"
 	${FC} ${FFLAGS} -o heat_transfer_adios2_tau $^ $(shell tau_cc.sh -tau:showlibs) $(shell ${ADIOS_DIR}/bin/adios_config -l -f)
-	cp heat_transfer_adios2_tau /lustre/atlas/proj-shared/csc143/kmehta/heat-transfer-codar-fork
 	@echo Done building
 
 noxml: heat_vars.o io_adios_noxml.o heat_transfer.o

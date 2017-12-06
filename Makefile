@@ -54,7 +54,6 @@ adios1: heat_vars.o io_adios_gpp.o heat_transfer.o
 
 adios2: heat_vars.o io_adios.o heat_transfer.o
 	${FC} ${FFLAGS} -o heat_transfer_adios2 $^ ${ADIOS_FLIB} 
-	cp heat_transfer_adios2 /lustre/atlas/proj-shared/csc143/kmehta/heat-transfer-codar-fork
 	@echo Done building
 
 noxml: heat_vars.o io_adios_noxml.o heat_transfer.o

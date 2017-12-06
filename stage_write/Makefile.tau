@@ -1,4 +1,5 @@
-CC=tau_cc.sh
+CC=cc
+#CC=tau_cc.sh
 FC=ftn
 CFLAGS=-g -O3
 FFLAGS=-g -Wall -fcheck=bounds #-fcheck=array-temps
@@ -18,7 +19,6 @@ OBJS = utils.o decompose_block.o
 stage_write_tau: ${OBJS} stage_write.o
 	@echo "Linking with Tau"
 	${CC} ${LDFLAGS} -o stage_write_tau ${OBJS} ${ADIOS_CLIB} stage_write.o $(shell tau_cc.sh -tau:showlibs) $(shell ${ADIOS_DIR}/bin/adios_config -l)
-	cp stage_write_tau /lustre/atlas/proj-shared/csc143/kmehta/heat-transfer-codar-fork/stage_write/.
 
 test_decompose: ${OBJS} test_decompose.o 
 	${CC} ${LDFLAGS} -o test_decompose ${OBJS} test_decompose.o ${ADIOS_CLIB}
