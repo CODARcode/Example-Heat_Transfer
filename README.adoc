@@ -145,6 +145,7 @@ $ perl ./chaos_bootstrap.pl -i
 ----
 +
 ** Create the evpath installation directory in advance, and specify it when running "perl ./chaos_bootstrap.pl -i"
+** A certain memory size is required. (16 GB is enough; 1 GB cannot work)
 ** Now edit chaos_build_config to remove the BUILDLIST entries after
    evpath with a comment (%). Then:
 +
