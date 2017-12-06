@@ -69,7 +69,7 @@ int         decomp_values[10];
 
 void cleanup_step ();
 int process_metadata(int step);
-int read_write(int step, double*);
+int read_write(int step);
 
 void printUsage(char *prgname)
 {
@@ -379,12 +379,11 @@ int process_metadata(int step)
 }
 
 
-int read_write(int step, double *write_time)
+int read_write(int step)
 {
     int retval = 0;
     int i;
     uint64_t total_size;
-    double t1, t2;
 
     // open output file
     retval = adios_open (&fh, group_name, outfilename, (step==1 ? "w" : "a"), comm);
@@ -416,10 +415,7 @@ int read_write(int step, double *write_time)
 
     adios_release_step (f); // this step is no longer needed to be locked in staging area
     if (retval!=0) return retval;
-    t1 = MPI_Wtime();
     return adios_close (fh); // write out output buffer to file
-    t2 = MPI_Wtime();
-    *write_time = *write_time + t2-t1;
 
     return retval;
 }
@@ -433,8 +429,7 @@ int main (int argc, char ** argv)
 
     double      tick, tock;
     double      io_time = 0.0;
-    double      this_step_timestamp, prev_step_timestamp;
-    double      t1, t2, write_time, total_write_time;
+    double      t1, t2;
 
     MPI_Init (&argc, &argv);
     //comm = MPI_COMM_WORLD;
@@ -447,8 +442,6 @@ int main (int argc, char ** argv)
     MPI_Comm_split(MPI_COMM_WORLD, 2, rank, &comm);	//color=2
     MPI_Comm_rank (comm, &rank);
     MPI_Comm_size (comm, &numproc);
-
-    if (rank == 0) tick = MPI_Wtime();
 
     if (processArgs(argc, argv)) {
         return 1;
@@ -463,7 +456,7 @@ int main (int argc, char ** argv)
     print0("Variable to transform   = \"%s\"\n", varnames);
     print0("Transform parameters    = \"%s\"\n", transparams);
 
-
+    tick = MPI_Wtime();
     err = adios_read_init_method(read_method, comm, rmethodparams);
 
     if (!err) {
@@ -498,7 +491,6 @@ int main (int argc, char ** argv)
                     rank, f->current_step);
         }
 
-        prev_step_timestamp = MPI_Wtime();
         while (1)
         {
             steps++; // start counting from 1
@@ -508,43 +500,27 @@ int main (int argc, char ** argv)
             print0 ("  last step:      %d\n", f->last_step);
             print0 ("  # of variables: %d:\n", f->nvars);
 
-            if (rank == 0) {
-                this_step_timestamp = MPI_Wtime();
-                printf("step gap: %lf\n", this_step_timestamp - prev_step_timestamp);
-                prev_step_timestamp = this_step_timestamp;
-            }
-
-            t1 = MPI_Wtime();
             retval = process_metadata(steps);
             if (retval) break;
-            t2 = MPI_Wtime();
-            if(rank==0) printf("stage_write rank %d time to process metadata %lf\n", rank, t2-t1);
 
-            t1 = MPI_Wtime();
-            retval = read_write(steps, &write_time);
+            retval = read_write(steps);
             if (retval) break;
-            t2 = MPI_Wtime();
-            io_time += t2-t1;
-            if(rank==0) printf("stage_write rank %d time to read write %lf\n", rank, t2-t1);
 
             // advance to 1) next available step with 2) blocking wait 
             curr_step = f->current_step; // save for final bye print
-            t1 = MPI_Wtime();
             cleanup_step();
             adios_advance_step (f, 0, timeout_sec);
-            t2 = MPI_Wtime();
-            if(rank==0) printf("stage_write rank %d time to advance step %lf\n", rank, t2-t1);
 
             if (adios_errno == err_end_of_stream) 
             {
                 if(rank==0) printf("stage_write rank 0 end of stream received\n");
-                break; // quit while loop
+                break;
             }
             else if (adios_errno == err_step_notready) 
             {
                 print ("rank %d: No new step arrived within the timeout. Quit. %s\n", 
                         rank, adios_errmsg());
-                break; // quit while loop
+                break;
             } 
             else if (f->current_step != curr_step+1) 
             {
@@ -566,13 +542,9 @@ int main (int argc, char ** argv)
     adios_finalize (rank);
 
     if (rank == 0) tock = MPI_Wtime();
-    if(rank==0) printf("stage_write rank 0 adios_finalize done.\n");
-    //MPI_Reduce(&write_time, &total_write_time, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
-    print0("Stage_write rank 0 runtime: %lf\nStage_write rank 0 io time: %lf\nStage_write rank 0 write time: %lf\n", tock-tick, io_time, write_time);
+    print0("Rank 0 runtime: %lf\n", tock-tick);
 
-    MPI_Finalize ();
-    if(rank==0) printf("stage_write rank 0 MPI_Finalize done. Exiting..\n");
-
+    MPI_Finalize();
     return retval;
 }
 
