@@ -212,3 +212,8 @@ for each of them do: 'make clean ; make' (because ADIOS was rebuilt)
 . Edit heat_transfer.xml to enable method="DATASPACES" and disable
 the other methods.
 . Run ./run-workflow.sh + but provide more processes
++
+----
+$ ./run-workflow.sh 17 DATASPACES
+----
++
