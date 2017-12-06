@@ -172,7 +172,7 @@ Follow directions here:
 . Build the heat_transfer simulator code:
 +
 ----
-$ export LD_LIBRARY_PATH=.../evpath/lib (Set the LD_LIBRARY_PATH variable to the library of the EVPath installation)
+$ export LD_LIBRARY_PATH=.../evpath/lib (the library of the EVPath installation)
 $ make
 ----
 . Build the stage_write program
