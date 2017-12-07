@@ -1,4 +1,5 @@
 CC=cc
+#CC=tau_cc.sh
 FC=ftn
 CFLAGS=-g -O3
 FFLAGS=-g -Wall -fcheck=bounds #-fcheck=array-temps
@@ -7,7 +8,7 @@ FFLAGS=-g -Wall -fcheck=bounds #-fcheck=array-temps
 ADIOS_INC=$(shell adios_config -c)
 ADIOS_CLIB=$(shell adios_config -l)
 
-default: clean stage_write 
+default: clean stage_write_tau
 all: default
 
 OBJS = utils.o decompose_block.o 
@@ -15,8 +16,9 @@ OBJS = utils.o decompose_block.o
 %.o: %.c
 	${CC} ${CFLAGS} -c ${ADIOS_INC} $<
 
-stage_write: ${OBJS} stage_write.o
-	${CC} ${LDFLAGS} -o stage_write ${OBJS} stage_write.o ${ADIOS_CLIB}
+stage_write_tau: ${OBJS} stage_write.o
+	@echo "Linking with Tau"
+	${CC} ${LDFLAGS} -o stage_write_tau ${OBJS} ${ADIOS_CLIB} stage_write.o $(shell tau_cc.sh -tau:showlibs) $(shell ${ADIOS_DIR}/bin/adios_config -l)
 	@echo "Done"
 
 test_decompose: ${OBJS} test_decompose.o 

@@ -36,8 +36,9 @@ module heat_vars
 
     integer   :: err
 
-    real*8 :: start_time, end_time, total_time,gbs,sz
-    real*8 :: io_start_time, io_end_time, io_total_time
+    real*8           :: start_time, end_time, total_time,gbs,sz
+    double precision :: io_start_time, io_end_time, io_time, io_total_time
+    double precision :: write_start_time, write_end_time, write_time, write_total_time
 
     real*8 :: hx, hy
     real*8 :: r_param

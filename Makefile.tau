@@ -1,15 +1,15 @@
 CC=cc
 FC=ftn
+#FC=tau_f90.sh
 CFLAGS=-g -O3
 FFLAGS=-g -O3 -Wall -fcheck=bounds #-fcheck=array-temps
-
 
 ## ADIOS_DIR/bin should in PATH env
 ADIOS_DIR=$(shell adios_config -d)
 ADIOS_FINC=$(shell adios_config -c -f)
 ADIOS_FLIB=$(shell adios_config -l -f)
 
-default: clean adios2
+default: clean adios2_tau
 all: clean default
 
 io_hdf5_a.o : io_hdf5_a.F90 
@@ -50,10 +50,14 @@ phdf5: heat_vars.o io_phdf5.o heat_transfer.o
 	libtool --mode=link --tag=FC ${FC} ${FFLAGS} -o heat_transfer_phdf5 $^ ${PHDF5_FLIB} 
 
 adios1: heat_vars.o io_adios_gpp.o heat_transfer.o
-	${FC} ${FFLAGS} -o heat_transfer_adios1 $^ ${ADIOS_FLIB} 
+	${FC} $(shell tau_cc.sh -tau:showlibs) $(shell ${ADIOS_DIR}/bin/adios_config -l -f) ${FFLAGS} -o heat_transfer_adios1_tau $^
+	# ${FC} ${FFLAGS} -o heat_transfer_adios1 $^ ${ADIOS_FLIB} 
 
-adios2: heat_vars.o io_adios.o heat_transfer.o
-	${FC} ${FFLAGS} -o heat_transfer_adios2 $^ ${ADIOS_FLIB} 
+adios2_tau: heat_vars.o io_adios.o heat_transfer.o
+	@echo "tau options"
+	@echo $(shell tau_cc.sh -tau:showlibs)
+	@echo "end tau options"
+	${FC} ${FFLAGS} -o heat_transfer_adios2_tau $^ $(shell tau_cc.sh -tau:showlibs) $(shell ${ADIOS_DIR}/bin/adios_config -l -f)
 	@echo Done building
 
 noxml: heat_vars.o io_adios_noxml.o heat_transfer.o

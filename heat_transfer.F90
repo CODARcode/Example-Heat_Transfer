@@ -28,7 +28,7 @@ program heat_transfer
     integer :: it    ! current iteration (1..iters)
     integer :: curr  ! 1 or 2:   T(:,:,curr) = T(t) current step  
                      ! the other half of T is the next step T(t+1)
-    real*8  :: tstart, tend
+    double precision :: tstart, tend
 
     call MPI_Init (ierr)
     ! World comm spans all applications started with the same aprun command 
@@ -134,8 +134,9 @@ program heat_transfer
     call MPI_Barrier (app_comm, ierr)
     tend = MPI_Wtime()
 
+    if (rank==0) print '("Rank 0 total runtime = ",f12.3,"s")', tend-tstart
+
     call MPI_Finalize (ierr)
-    if (rank==0) print '("Total runtime = ",f6.3,"s")', tend-tstart
 end program heat_transfer
 
 
