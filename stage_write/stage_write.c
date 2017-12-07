@@ -275,7 +275,7 @@ int process_metadata(int step)
 
     if (step == 1) {
         print0 ("Rank %d: allocate %" PRIu64 " MB for output buffer\n", rank, bufsize/1048576+1);
-        adios_set_max_buffer_size (bufsize/1048576+1); 
+        //adios_set_max_buffer_size (bufsize/1048576+1); 
     }
     // allocate read buffer
     bufsize = largest_block + 128;
