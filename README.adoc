@@ -178,7 +178,9 @@ Follow directions here:
 +
 Then put the STC and Turbine bin/ directories in your PATH
 +
-** A certain memory size is required. (16 GB is enough; 1 GB cannot work.)
++
+A certain memory size is required. (16 GB is enough; 1 GB cannot work.)
++
 . Install the MPIX_Launch module: +
 Follow directions here:
 +
