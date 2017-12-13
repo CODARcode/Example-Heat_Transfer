@@ -3,28 +3,37 @@
 This is for haswell partition, modifications would be required for knl.
 
 1. Use GNU compiler:
++
 ----
 module switch PrgEnv-intel PrgEnv-gnu
 ----
++
 This will load the default version `gcc/6.3.0`. If it does not, switch to
 this version (or upate later steps accordingly to use newer version by
 default in spack).
+
 2. Update Makefile, stage_write/Makefile, make.settings to use titan GNU
  compiler wrappers/links:
++
 ----
 CC=cc
 FC=ftn
 LINKER=cc
 ----
+
 3. Install codar for of savanna: 
- https://github.com/CODARcode/savanna/blob/master/README.md#installation
+https://github.com/CODARcode/savanna/blob/master/README.md#installation
++
 Setup local packages (WARNING: this will overwrite any previous customization
 to `~/.spack/packages.yaml`):
++
 ----
 python spack-setup-local.py
 ----
++
 Make the following changes to the start of `~/.spack/packages.yaml`, to use
 the system default gnu compiler version and the system mpich:
++
 ----
 packages:
     all:
@@ -35,17 +44,22 @@ packages:
         paths:
             mpich@4.9%gcc@6.3.0: /opt/cray/pe/mpt/7.6.0/gni/mpich-gnu/4.9
 ----
+
 4. Install latest adios and dependencies with spack
++
 ----
 spack install adios@develop+fortran+zlib+sz+zfp staging=flexpath,dataspaces
 ----
-4. Build heat transfer
+
+5. Build heat transfer
++
 ----
 spack load adios@develop mpich sz dataspaces \
     libevpath libffs gtkorvo-atl gtkorvo-cercs-env gtkorvo-dill
 make && cd stage_write && make && cd..
 ----
-
++
 TODO: this is resulting in a libnl link error, not sure what is going in.
-5. Run test. See `test-cori.sbatch` for an example, or if you
- have swift installed see `run-workflow.sh`.
+
+6. Run test. See `test-cori.sbatch` for an example, or if you
+have swift installed see `run-workflow.sh`.
