@@ -107,10 +107,12 @@ Note: check whether mpicc is correct. It's usually gcc.
  export LD_LIBRARY_PATH=$HOME/software/evpath/lib:$LD_LIBRARY_PATH
 +
 ** Edit the file "~/project/Example-Heat_Transfer/Makefile". Use mpif90 for fortran and comment "-fcheck=bounds"
-CC=gcc
-FC=mpif90 # gfortran
-CFLAGS=-g -O3
-FFLAGS=-g -O3 -Wall # -fcheck=bounds -fcheck=array-temps
++
+ CC=gcc
+ FC=mpif90 # gfortran
+ CFLAGS=-g -O3
+ FFLAGS=-g -O3 -Wall # -fcheck=bounds -fcheck=array-temps
++
 ** Check whether mpicc is correct. It's usually gcc.
 +
  module avail
@@ -121,10 +123,10 @@ FFLAGS=-g -O3 -Wall # -fcheck=bounds -fcheck=array-temps
 +
 ** Edit the file ~/project/Example-Heat_Transfer/build.sh
 +
-#!/bin/bash -l
-# -l        Make bash act as if it had been invoked as a login shell (see INVOCATION below).
-set -eu
-module load mvapich2-gnu-psm/1.9
-make
+ #!/bin/bash -l
+ # -l        Make bash act as if it had been invoked as a login shell (see INVOCATION below).
+ set -eu
+ module load mvapich2-gnu-psm/1.9
+ make
 +
 ** Compile the heat_transfer simulator code by "./build.sh"
