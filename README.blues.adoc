@@ -70,3 +70,31 @@ Note: check whether mpicc is correct. It's usually gcc.
 +
 ** Check the installation by "swift-t -v", "stc -v", "turbine -v".
 
+5. Install the MPIX_Launch module
+** Download the MPIX_Launch module
++
+ cd ~/project
+ git clone https://bitbucket.org/jmjwozniak/mpix_launch_swift.git
+ cd ~/project/mpix_launch_swift
++
+** Edit src/setting.sh
++
+ export CC=/software/mvapich2-gnu-psm-1.9.5/bin/mpicc
+ export MPI=/software/mvapich2-gnu-psm-1.9.5/
+ export CFLAGS=-I$MPI/include
+ export LDFLAGS="-L$MPI/lib -lmpich"
+ export MODE=cluster QUEUE=default PROJECT="Workflow"
++
+** Build and install
++
+ chmod 744 setting.sh
+ src/setting.sh
+ src/build.sh
++
+** Run an example to test.
++
+ cd ~/project/mpix_launch_swift/apps/example
+ ./build-linux.sh
+ ./run-blues.sh
++
+
