@@ -38,7 +38,6 @@ How to build ADIOS + FlexPath for Blues.
 3. Download/install ADIOS
 ** Create the ADIOS installation directory in advance, and specify it when running "./configure --prefix=...", such as $HOME/software/adios
 +
----
  cd ~/project
  wget http://users.nccs.gov/~pnorbert/adios-1.11.0.tar.gz
  tar -zxvf adios-1.11.0.tar.gz
@@ -51,7 +50,6 @@ How to build ADIOS + FlexPath for Blues.
  make install
  export ADIOS_HOME=$HOME/software/adios
  export PATH=$ADIOS_HOME/bin:$PATH
----
 +
 
 Note: check whether mpicc is correct. It's usually gcc.
