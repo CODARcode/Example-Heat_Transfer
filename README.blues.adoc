@@ -1,15 +1,28 @@
 How to build ADIOS + FlexPath for Blues.
 
-1. Install all APT packages
+1. check all APT packages
 +
- sudo apt-get update
- sudo apt-get -y install gcc g++ gfortran mpich
- sudo apt-get -y install tcl tcl-dev swig zsh ant
- sudo apt-get -y install build-essential autoconf
- sudo apt-get -y install libxml2 libxml2-dev gsoap
- sudo apt-get -y install bison flex
- sudo apt-get -y install cmake subversion git
+ gcc -v
+ g++ -v
+ gfortran -v
+ mpicc -v
+ mpiexec --version
+ tclsh
+ % info patchlevel
+ 8.5.7
+ % exit
+  swig -version
+ zsh --version
+ ant -version
+ make -v
+ autoconf -V
+ bison -V
+ flex -V
+ cmake --version [EVPath build requires CMake 3.0 or higher]
+ svn --version
+ git --version
 +
+** Note: Check available cmake version with "softenv | grep cmake", and add "+cmake-3.5.2" in a new line before "@default" in the file "~/.soft".
 
 2. Download/install EVPATH/FlexPath
 
