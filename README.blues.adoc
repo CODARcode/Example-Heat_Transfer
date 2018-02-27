@@ -1,4 +1,4 @@
-How to build ADIOS + FlexPath for Blues.
+How to build for Blues.
 
 1. check all APT packages
 +
