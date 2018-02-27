@@ -184,7 +184,6 @@ Note: check whether mpicc is correct. It's usually gcc.
  Write method parameters = ""
  Variable to transform   = ""
  Transform parameters    = ""
- 
  Waiting to open stream heat.bp...
   Process number        : 4 x 3
   Array size per process at first step: 40 x 50
