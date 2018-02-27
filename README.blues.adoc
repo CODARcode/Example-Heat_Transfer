@@ -53,3 +53,16 @@ How to build ADIOS + FlexPath for Blues.
 +
 
 Note: check whether mpicc is correct. It's usually gcc.
+
+4. Clone/install Swift/T
+** Install Java. Then,
++
+ cd ~/project
+ git clone https://github.com/swift-lang/swift-t.git
+ cd ~/project/swift-t
+ dev/build/init-settings.sh
++
+** Create the swift-t installation directory in advance, and specify it in the file dev/build/swift-t-settings.sh, such as "export SWIFT_T_PREFIX=$HOME/software/swift-t". Then,
++
+ dev/build/build-all.sh
++
