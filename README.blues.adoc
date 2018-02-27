@@ -19,7 +19,7 @@ Download EVPATH
  cd ~/project/evpath-build
  wget http://www.cc.gatech.edu/systems/projects/EVPath/chaos_bootstrap.pl
 +
-** Create the evpath installation directory in advance, and specify it when running "perl ./chaos_bootstrap.pl -i", such as $HOME/software/evpath
+Create the evpath installation directory in advance, and specify it when running "perl ./chaos_bootstrap.pl -i", such as $HOME/software/evpath
 +
 ----
  mkdir ~/software
