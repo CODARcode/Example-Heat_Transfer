@@ -134,3 +134,27 @@ Note: check whether mpicc is correct. It's usually gcc.
 ** Note: (1) Use mpif90 as fortran compiler. (2) Comment "-fcheck=bounds" in Makefile. (3) mpif.h is a MPI fortran for header in /software/mvapich2-gnu-psm-1.9.5/lib. Therefore, use command "module load mvapich2-gnu-psm/1.9".
 
 7. Build the stage_write program
+** Enter stage_write, and load module mvapich2-gnu-psm/1.9. Then, edit Makefile. Set CC=mpicc and FC=mpif90
++
+ CC=mpicc # cc
+ FC=mpif90 # ftn
+ CFLAGS=-g -O3
+ FFLAGS=-g -Wall -fcheck=bounds #-fcheck=array-temps
++
+** Compile and test stage_write
++
+ make -j
+ mpiexec -n 2 stage_write
++
+** Note: use "export LD_LIBRARY_PATH=$HOME/software/evpath/lib:$LD_LIBRARY_PATH" instead of "export LD_LIBRARY_PATH=$HOME/software/evpath/lib" to avoid breaking LD_LIBRARY_PATH=/software/mvapich2-gnu-psm-1.9.5/lib.
+
+8. Edit run-workflow.sh
+** Enter the Example-Heat_Transfer directory, and edit run-workflow.sh .
++
+ # USER: Set these to the correct locations:
+ LAUNCH=$HOME/project/mpix_launch_swift/src
+ EVPATH=$HOME/software/evpath
++
+
+9. Run ./run-workflow.sh
+** Usage: ./run-workflow.sh PROCS [DATASPACES|FLEXPATH|MPI], such as "./run-workflow.sh 16 FLEXPATH"
