@@ -19,33 +19,17 @@ Download EVPATH
  cd ~/project/evpath-build
  wget http://www.cc.gatech.edu/systems/projects/EVPath/chaos_bootstrap.pl
 +
-Create and specify install directory, such as $HOME/software/evpath
+** Create the evpath installation directory in advance, and specify it when running "perl ./chaos_bootstrap.pl -i", such as $HOME/software/evpath
 +
+----
  mkdir ~/software
  mkdir ~/software/evpath
  perl ./chaos_bootstrap.pl -i
+----
 +
-Edit chaos_build_config and comment the project name after evpath
+Edit chaos_build_config to remove the BUILDLIST entries after evpath with a comment (%). Then, build and install EVPATH. EVPath build requires CMake 3.0 or higher.
 +
-$ nano chaos_build_config
-…
- 15 %BUILDLIST
- 16 % project       repository
- 17 dill            korvogithub
- 18 cercs_env       korvogithub
- 19 atl             korvogithub
- 20 ffs             korvogithub
- 21 enet            korvogithub
- 22 nnti            korvogithub
- 23 evpath          korvogithub
- 24 %comm_group     kaos
- 25 %cmrpc          kaos
- 26 %pds            kaos
-…
-+
-Build and install EVPATH. EVPath build requires CMake 3.0 or higher.
-+
+----
  perl ./chaos_build.pl
+----
 +
-
-
