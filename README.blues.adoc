@@ -36,6 +36,7 @@ How to build ADIOS + FlexPath for Blues.
 +
 
 3. Download/install ADIOS
+** Create the ADIOS installation directory in advance, and specify it when running "./configure --prefix=...", such as $HOME/software/adios
 +
 ---
  cd ~/project
@@ -53,4 +54,4 @@ How to build ADIOS + FlexPath for Blues.
 ---
 +
 
-Note: mpicc should be based on gcc.
+Note: check whether mpicc is correct. It's usually gcc.
