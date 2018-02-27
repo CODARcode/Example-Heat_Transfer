@@ -130,9 +130,10 @@ Note: check whether mpicc is correct. It's usually gcc.
  make
 +
 ** Compile the heat_transfer simulator code by "./build.sh"
+
 Note: 
 +
-1. Use mpif90 as fortran compiler. 
-2. Comment "-fcheck=bounds" in Makefile. 
-3. mpif.h is a MPI fortran for header in /software/mvapich2-gnu-psm-1.9.5/lib. Therefore, use command "module load mvapich2-gnu-psm/1.9".
+ 1. Use mpif90 as fortran compiler. 
+ 2. Comment "-fcheck=bounds" in Makefile. 
+ 3. mpif.h is a MPI fortran for header in /software/mvapich2-gnu-psm-1.9.5/lib. Therefore, use command "module load mvapich2-gnu-psm/1.9".
 +
