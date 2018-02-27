@@ -22,7 +22,7 @@ How to build ADIOS + FlexPath for Blues.
  % info patchlevel
  % exit
 +
-** Note: Check available cmake version with "softenv | grep cmake", and add "+cmake-3.5.2" in a new line before "@default" in the file "~/.soft".
+** Note: Check available cmake versions with "softenv | grep cmake", and add "+cmake-3.5.2" in a new line before "@default" in the file "~/.soft".
 
 2. Download/install EVPATH/FlexPath
 
