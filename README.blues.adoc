@@ -98,3 +98,33 @@ Note: check whether mpicc is correct. It's usually gcc.
  ./run-blues.sh
 +
 
+6. Build the heat_transfer simulator code
+** Download the heat_transfer simulator code and set the envionmental variable LD_LIBRARY_PATH .
++
+ cd ~/project
+ git clone https://github.com/CODARcode/Example-Heat_Transfer.git
+ cd ~/project/Example-Heat_Transfer
+ export LD_LIBRARY_PATH=$HOME/software/evpath/lib:$LD_LIBRARY_PATH
++
+** Edit the file "~/project/Example-Heat_Transfer/Makefile". Use mpif90 for fortran and comment "-fcheck=bounds"
+CC=gcc
+FC=mpif90 # gfortran
+CFLAGS=-g -O3
+FFLAGS=-g -O3 -Wall # -fcheck=bounds -fcheck=array-temps
+** Check whether mpicc is correct. It's usually gcc.
++
+ module avail
+ module load mvapich2-gnu-psm/1.9
+ mpicc -show
+ which mpif90
+ mpif90 -show
++
+** Edit the file ~/project/Example-Heat_Transfer/build.sh
++
+#!/bin/bash -l
+# -l        Make bash act as if it had been invoked as a login shell (see INVOCATION below).
+set -eu
+module load mvapich2-gnu-psm/1.9
+make
++
+** Compile the heat_transfer simulator code by "./build.sh"
