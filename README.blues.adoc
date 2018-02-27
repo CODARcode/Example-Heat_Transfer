@@ -7,11 +7,7 @@ How to build ADIOS + FlexPath for Blues.
  gfortran -v
  mpicc -v
  mpiexec --version
- tclsh
- % info patchlevel
- 8.5.7
- % exit
-  swig -version
+ swig -version
  zsh --version
  ant -version
  make -v
@@ -21,6 +17,10 @@ How to build ADIOS + FlexPath for Blues.
  cmake --version [EVPath build requires CMake 3.0 or higher]
  svn --version
  git --version
+ 
+ tclsh
+ % info patchlevel
+ % exit
 +
 ** Note: Check available cmake version with "softenv | grep cmake", and add "+cmake-3.5.2" in a new line before "@default" in the file "~/.soft".
 
