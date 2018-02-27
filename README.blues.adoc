@@ -170,4 +170,541 @@ Note: check whether mpicc is correct. It's usually gcc.
 +
 
 9. Run ./run-workflow.sh
-** Usage: ./run-workflow.sh PROCS [DATASPACES|FLEXPATH|MPI], such as "./run-workflow.sh 16 FLEXPATH"
+** Usage: ./run-workflow.sh PROCS [DATASPACES|FLEXPATH|MPI], such as "./run-workflow.sh 16 FLEXPATH" with output as below.
++
+ swift: launching: ./heat_transfer_adios2
+ swift: launching: stage_write/stage_write
+ size: 6
+ Input stream            = heat.bp
+ Output stream           = staged.bp
+ Read method             = FLEXPATH (id=5)
+ Read method parameters  = "max_chunk_size=100; app_id =32767;
+ verbose= 3;poll_interval  =  100;"
+ Write method            = MPI
+Write method parameters = ""
+Variable to transform   = ""
+Transform parameters    = ""
+
+Waiting to open stream heat.bp...
+ Process number        : 4 x 3
+ Array size per process at first step: 40 x 50
+Step    1:
+Writing:  filename               size(GB)    io_time(sec)      GB/s
+Step   1: heat.bp                   0.0000         0.170         0.000
+Step    2:
+rank 1: position in 2-D space = 1,0
+rank 1: ldims   in 2-D space = 50,160
+rank 1: offsets in 2-D space = 50,0
+rank 1: position in 2-D space = 1,0
+rank 1: ldims   in 2-D space = 50,160
+rank 1: offsets in 2-D space = 50,0
+File info:
+  current step:   0
+  last step:      1
+  # of variables: 13:
+Group name is heat
+Get info on variable 0: gndx
+    integer    gndx     scalar
+Get info on variable 1: gndy
+    integer    gndy     scalar
+Get info on variable 2: /info/nproc
+    integer    /info/nproc      scalar
+Get info on variable 3: /info/npx
+    integer    /info/npx        scalar
+Get info on variable 4: /info/npy
+    integer    /info/npy        scalar
+Get info on variable 5: offx
+    integer    offx     scalar
+Get info on variable 6: offy
+    integer    offy     scalar
+Get info on variable 7: ndx
+    integer    ndx      scalar
+Get info on variable 8: ndy
+    integer    ndy      scalar
+Get info on variable 9: step
+    integer    step     scalar
+Get info on variable 10: iterations
+    integer    iterations       scalar
+Get info on variable 11: T
+    double     T[150, 160] :
+rank 0: position in 2-D space = 0,0
+rank 0: ldims   in 2-D space = 50,160
+rank 0: offsets in 2-D space = 0,0
+Get info on variable 12: dT
+    double     dT[150, 160] :
+rank 0: position in 2-D space = 0,0
+rank 0: ldims   in 2-D space = 50,160
+rank 0: offsets in 2-D space = 0,0
+Rank 0: allocate 1 MB for output buffer
+Rank 0: allocate 0.0611572 MB for input buffer
+rank 0: Define scalar path="(null)" name="gndx"
+rank 0: Define scalar path="(null)" name="gndy"
+rank 0: Define scalar path="/info" name="nproc"
+rank 0: Define scalar path="/info" name="npx"
+rank 0: Define scalar path="/info" name="npy"
+rank 0: Define scalar path="(null)" name="offx"
+rank 0: Define scalar path="(null)" name="offy"
+rank 0: Define scalar path="(null)" name="ndx"
+rank 0: Define scalar path="(null)" name="ndy"
+rank 0: Define scalar path="(null)" name="step"
+rank 0: Define scalar path="(null)" name="iterations"
+rank 0: Define variable path="(null)" name="T"  gdims=150,160  ldims=50,160  offs=0,0
+rank 1: Define variable path="(null)" name="T"  gdims=150,160  ldims=50,160  offs=50,0
+rank 0: Define variable path="(null)" name="dT"  gdims=150,160  ldims=50,160  offs=0,0
+rank 1: Define variable path="(null)" name="dT"  gdims=150,160  ldims=50,160  offs=50,0
+rank 2: position in 2-D space = 2,0
+rank 2: ldims   in 2-D space = 50,160
+rank 2: offsets in 2-D space = 100,0
+rank 2: position in 2-D space = 2,0
+rank 2: ldims   in 2-D space = 50,160
+rank 2: offsets in 2-D space = 100,0
+rank 2: Define variable path="(null)" name="T"  gdims=150,160  ldims=50,160  offs=100,0
+rank 2: Define variable path="(null)" name="dT"  gdims=150,160  ldims=50,160  offs=100,0
+rank 0: Write variable 0: gndx
+rank 0: Write variable 1: gndy
+rank 0: Write variable 2: /info/nproc
+rank 0: Write variable 3: /info/npx
+rank 0: Write variable 4: /info/npy
+rank 0: Write variable 5: offx
+rank 0: Write variable 6: offy
+rank 0: Write variable 7: ndx
+rank 0: Write variable 8: ndy
+rank 0: Write variable 9: step
+rank 0: Write variable 10: iterations
+rank 0: Write variable 11: T
+rank 0: Write variable 12: dT
+rank 1: Write variable 11: T
+rank 2: Write variable 11: T
+rank 1: Write variable 12: dT
+rank 2: Write variable 12: dT
+Step   2: heat.bp                   0.0000         0.089         0.000
+Step    3:
+rank 1: position in 2-D space = 1,0
+rank 1: ldims   in 2-D space = 50,160
+rank 1: offsets in 2-D space = 50,0
+rank 1: position in 2-D space = 1,0
+rank 1: ldims   in 2-D space = 50,160
+rank 1: offsets in 2-D space = 50,0
+rank 1: Define variable path="(null)" name="T"  gdims=150,160  ldims=50,160  offs=50,0
+rank 2: position in 2-D space = 2,0
+rank 2: ldims   in 2-D space = 50,160
+rank 1: Define variable path="(null)" name="dT"  gdims=150,160  ldims=50,160  offs=50,0
+rank 2: offsets in 2-D space = 100,0
+rank 2: position in 2-D space = 2,0
+rank 2: ldims   in 2-D space = 50,160
+rank 2: offsets in 2-D space = 100,0
+rank 2: Define variable path="(null)" name="T"  gdims=150,160  ldims=50,160  offs=100,0
+File info:
+  current step:   1
+  last step:      1
+  # of variables: 13:
+Get info on variable 0: gndx
+    integer    gndx     scalar
+Get info on variable 1: gndy
+    integer    gndy     scalar
+Get info on variable 2: /info/nproc
+    integer    /info/nproc      scalar
+Get info on variable 3: /info/npx
+    integer    /info/npx        scalar
+Get info on variable 4: /info/npy
+    integer    /info/npy        scalar
+Get info on variable 5: offx
+    integer    offx     scalar
+Get info on variable 6: offy
+    integer    offy     scalar
+Get info on variable 7: ndx
+    integer    ndx      scalar
+Get info on variable 8: ndy
+    integer    ndy      scalar
+Get info on variable 9: step
+    integer    step     scalar
+Get info on variable 10: iterations
+    integer    iterations       scalar
+Get info on variable 11: T
+    double     T[150, 160] :
+rank 0: position in 2-D space = 0,0
+rank 0: ldims   in 2-D space = 50,160
+rank 0: offsets in 2-D space = 0,0
+Get info on variable 12: dT
+    double     dT[150, 160] :
+rank 0: position in 2-D space = 0,0
+rank 0: ldims   in 2-D space = 50,160
+rank 0: offsets in 2-D space = 0,0
+Rank 0: allocate 0.0611572 MB for input buffer
+rank 0: Define scalar path="(null)" name="gndx"
+rank 0: Define scalar path="(null)" name="gndy"
+rank 0: Define scalar path="/info" name="nproc"
+rank 0: Define scalar path="/info" name="npx"
+rank 0: Define scalar path="/info" name="npy"
+rank 0: Define scalar path="(null)" name="offx"
+rank 0: Define scalar path="(null)" name="offy"
+rank 0: Define scalar path="(null)" name="ndx"
+rank 0: Define scalar path="(null)" name="ndy"
+rank 0: Define scalar path="(null)" name="step"
+rank 0: Define scalar path="(null)" name="iterations"
+rank 0: Define variable path="(null)" name="T"  gdims=150,160  ldims=50,160  offs=0,0
+rank 0: Define variable path="(null)" name="dT"  gdims=150,160  ldims=50,160  offs=0,0
+rank 0: Write variable 0: gndx
+rank 0: Write variable 1: gndy
+rank 0: Write variable 2: /info/nproc
+rank 0: Write variable 3: /info/npx
+rank 0: Write variable 4: /info/npy
+rank 0: Write variable 5: offx
+rank 0: Write variable 6: offy
+rank 0: Write variable 7: ndx
+rank 0: Write variable 8: ndy
+rank 0: Write variable 9: step
+rank 0: Write variable 10: iterations
+rank 2: Define variable path="(null)" name="dT"  gdims=150,160  ldims=50,160  offs=100,0
+rank 2: Write variable 11: T
+rank 1: Write variable 11: T
+rank 0: Write variable 11: T
+rank 2: Write variable 12: dT
+rank 1: Write variable 12: dT
+rank 0: Write variable 12: dT
+Step   3: heat.bp                   0.0000         0.000         0.000
+Step    4:
+Step   4: heat.bp                   0.0000         0.078         0.000
+Step    5:
+File info:
+  current step:   2
+  last step:      3
+  # of variables: 13:
+Get info on variable 0: gndx
+    integer    gndx     scalar
+Get info on variable 1: gndy
+    integer    gndy     scalar
+Get info on variable 2: /info/nproc
+    integer    /info/nproc      scalar
+Get info on variable 3: /info/npx
+    integer    /info/npx        scalar
+Get info on variable 4: /info/npy
+    integer    /info/npy        scalar
+Get info on variable 5: offx
+    integer    offx     scalar
+Get info on variable 6: offy
+    integer    offy     scalar
+Get info on variable 7: ndx
+    integer    ndx      scalar
+Get info on variable 8: ndy
+    integer    ndy      scalar
+Get info on variable 9: step
+    integer    step     scalar
+Get info on variable 10: iterations
+    integer    iterations       scalar
+Get info on variable 11: T
+    double     T[150, 160] :
+rank 0: position in 2-D space = 0,0
+rank 0: ldims   in 2-D space = 50,160
+rank 0: offsets in 2-D space = 0,0
+Get info on variable 12: dT
+    double     dT[150, 160] :
+rank 0: position in 2-D space = 0,0
+rank 0: ldims   in 2-D space = 50,160
+rank 0: offsets in 2-D space = 0,0
+Rank 0: allocate 0.0611572 MB for input buffer
+rank 0: Define scalar path="(null)" name="gndx"
+rank 0: Define scalar path="(null)" name="gndy"
+rank 0: Define scalar path="/info" name="nproc"
+rank 0: Define scalar path="/info" name="npx"
+rank 0: Define scalar path="/info" name="npy"
+rank 0: Define scalar path="(null)" name="offx"
+rank 0: Define scalar path="(null)" name="offy"
+rank 0: Define scalar path="(null)" name="ndx"
+rank 0: Define scalar path="(null)" name="ndy"
+rank 0: Define scalar path="(null)" name="step"
+rank 0: Define scalar path="(null)" name="iterations"
+rank 0: Define variable path="(null)" name="T"  gdims=150,160  ldims=50,160  offs=0,0
+rank 0: Define variable path="(null)" name="dT"  gdims=150,160  ldims=50,160  offs=0,0
+rank 0: Write variable 0: gndx
+rank 0: Write variable 1: gndy
+rank 0: Write variable 2: /info/nproc
+rank 0: Write variable 3: /info/npx
+rank 0: Write variable 4: /info/npy
+rank 0: Write variable 5: offx
+rank 0: Write variable 6: offy
+rank 0: Write variable 7: ndx
+rank 0: Write variable 8: ndy
+rank 0: Write variable 9: step
+rank 0: Write variable 10: iterations
+rank 1: position in 2-D space = 1,0
+rank 1: ldims   in 2-D space = 50,160
+rank 1: offsets in 2-D space = 50,0
+rank 1: position in 2-D space = 1,0
+rank 1: ldims   in 2-D space = 50,160
+rank 1: offsets in 2-D space = 50,0
+rank 1: Define variable path="(null)" name="T"  gdims=150,160  ldims=50,160  offs=50,0
+rank 1: Define variable path="(null)" name="dT"  gdims=150,160  ldims=50,160  offs=50,0
+rank 2: position in 2-D space = 2,0
+rank 2: ldims   in 2-D space = 50,160
+rank 2: offsets in 2-D space = 100,0
+rank 2: position in 2-D space = 2,0
+rank 2: ldims   in 2-D space = 50,160
+rank 2: offsets in 2-D space = 100,0
+rank 2: Define variable path="(null)" name="T"  gdims=150,160  ldims=50,160  offs=100,0
+rank 2: Define variable path="(null)" name="dT"  gdims=150,160  ldims=50,160  offs=100,0
+rank 0: Write variable 11: T
+rank 2: Write variable 11: T
+rank 1: Write variable 11: T
+rank 0: Write variable 12: dT
+rank 1: Write variable 12: dT
+rank 2: Write variable 12: dT
+File info:
+  current step:   3
+  last step:      3
+  # of variables: 13:
+Get info on variable 0: gndx
+    integer    gndx     scalar
+Get info on variable 1: gndy
+    integer    gndy     scalar
+Get info on variable 2: /info/nproc
+    integer    /info/nproc      scalar
+Get info on variable 3: /info/npx
+    integer    /info/npx        scalar
+Get info on variable 4: /info/npy
+    integer    /info/npy        scalar
+Get info on variable 5: offx
+    integer    offx     scalar
+Get info on variable 6: offy
+    integer    offy     scalar
+Get info on variable 7: ndx
+    integer    ndx      scalar
+Get info on variable 8: ndy
+    integer    ndy      scalar
+Get info on variable 9: step
+    integer    step     scalar
+Get info on variable 10: iterations
+    integer    iterations       scalar
+Get info on variable 11: T
+    double     T[150, 160] :
+rank 0: position in 2-D space = 0,0
+rank 0: ldims   in 2-D space = 50,160
+rank 0: offsets in 2-D space = 0,0
+Get info on variable 12: dT
+    double     dT[150, 160] :
+rank 0: position in 2-D space = 0,0
+rank 0: ldims   in 2-D space = 50,160
+rank 0: offsets in 2-D space = 0,0
+Rank 0: allocate 0.0611572 MB for input buffer
+rank 0: Define scalar path="(null)" name="gndx"
+rank 0: Define scalar path="(null)" name="gndy"
+rank 0: Define scalar path="/info" name="nproc"
+rank 0: Define scalar path="/info" name="npx"
+rank 0: Define scalar path="/info" name="npy"
+rank 0: Define scalar path="(null)" name="offx"
+rank 0: Define scalar path="(null)" name="offy"
+rank 0: Define scalar path="(null)" name="ndx"
+rank 0: Define scalar path="(null)" name="ndy"
+rank 0: Define scalar path="(null)" name="step"
+rank 0: Define scalar path="(null)" name="iterations"
+rank 0: Define variable path="(null)" name="T"  gdims=150,160  ldims=50,160  offs=0,0
+rank 0: Define variable path="(null)" name="dT"  gdims=150,160  ldims=50,160  offs=0,0
+rank 0: Write variable 0: gndx
+rank 0: Write variable 1: gndy
+rank 0: Write variable 2: /info/nproc
+rank 0: Write variable 3: /info/npx
+rank 0: Write variable 4: /info/npy
+rank 0: Write variable 5: offx
+rank 0: Write variable 6: offy
+rank 0: Write variable 7: ndx
+rank 0: Write variable 8: ndy
+rank 1: position in 2-D space = 1,0
+rank 1: ldims   in 2-D space = 50,160
+rank 1: offsets in 2-D space = 50,0
+rank 1: position in 2-D space = 1,0
+rank 1: ldims   in 2-D space = 50,160
+rank 1: offsets in 2-D space = 50,0
+rank 1: Define variable path="(null)" name="T"  gdims=150,160  ldims=50,160  offs=50,0
+rank 1: Define variable path="(null)" name="dT"  gdims=150,160  ldims=50,160  offs=50,0
+rank 2: position in 2-D space = 2,0
+rank 2: ldims   in 2-D space = 50,160
+rank 2: offsets in 2-D space = 100,0
+rank 2: position in 2-D space = 2,0
+rank 2: ldims   in 2-D space = 50,160
+rank 2: offsets in 2-D space = 100,0
+rank 2: Define variable path="(null)" name="T"  gdims=150,160  ldims=50,160  offs=100,0
+rank 2: Define variable path="(null)" name="dT"  gdims=150,160  ldims=50,160  offs=100,0
+rank 0: Write variable 9: step
+rank 0: Write variable 10: iterations
+rank 0: Write variable 11: T
+rank 1: Write variable 11: T
+rank 2: Write variable 11: T
+rank 0: Write variable 12: dT
+rank 2: Write variable 12: dT
+rank 1: Write variable 12: dT
+Step   5: heat.bp                   0.0000         0.100         0.000
+Step    6:
+File info:
+  current step:   4
+  last step:      4
+  # of variables: 13:
+rank 2: position in 2-D space = 2,0
+rank 2: ldims   in 2-D space = 50,160
+rank 2: offsets in 2-D space = 100,0
+rank 2: position in 2-D space = 2,0
+rank 2: ldims   in 2-D space = 50,160
+rank 2: offsets in 2-D space = 100,0
+Get info on variable 0: gndx
+    integer    gndx     scalar
+Get info on variable 1: gndy
+rank 1: position in 2-D space = 1,0
+rank 1: ldims   in 2-D space = 50,160
+rank 1: offsets in 2-D space = 50,0
+rank 1: position in 2-D space = 1,0
+rank 1: ldims   in 2-D space = 50,160
+rank 1: offsets in 2-D space = 50,0
+rank 1: Define variable path="(null)" name="T"  gdims=150,160  ldims=50,160  offs=50,0
+rank 1: Define variable path="(null)" name="dT"  gdims=150,160  ldims=50,160  offs=50,0
+rank 2: Define variable path="(null)" name="T"  gdims=150,160  ldims=50,160  offs=100,0
+rank 2: Define variable path="(null)" name="dT"  gdims=150,160  ldims=50,160  offs=100,0
+    integer    gndy     scalar
+Get info on variable 2: /info/nproc
+    integer    /info/nproc      scalar
+Get info on variable 3: /info/npx
+    integer    /info/npx        scalar
+Get info on variable 4: /info/npy
+    integer    /info/npy        scalar
+Get info on variable 5: offx
+    integer    offx     scalar
+Get info on variable 6: offy
+    integer    offy     scalar
+Get info on variable 7: ndx
+    integer    ndx      scalar
+Get info on variable 8: ndy
+    integer    ndy      scalar
+Get info on variable 9: step
+    integer    step     scalar
+Get info on variable 10: iterations
+    integer    iterations       scalar
+Get info on variable 11: T
+    double     T[150, 160] :
+rank 0: position in 2-D space = 0,0
+rank 0: ldims   in 2-D space = 50,160
+rank 0: offsets in 2-D space = 0,0
+Get info on variable 12: dT
+    double     dT[150, 160] :
+rank 0: position in 2-D space = 0,0
+rank 0: ldims   in 2-D space = 50,160
+rank 0: offsets in 2-D space = 0,0
+Rank 0: allocate 0.0611572 MB for input buffer
+rank 0: Define scalar path="(null)" name="gndx"
+rank 0: Define scalar path="(null)" name="gndy"
+rank 0: Define scalar path="/info" name="nproc"
+rank 0: Define scalar path="/info" name="npx"
+rank 0: Define scalar path="/info" name="npy"
+rank 0: Define scalar path="(null)" name="offx"
+rank 0: Define scalar path="(null)" name="offy"
+rank 0: Define scalar path="(null)" name="ndx"
+rank 0: Define scalar path="(null)" name="ndy"
+rank 0: Define scalar path="(null)" name="step"
+rank 0: Define scalar path="(null)" name="iterations"
+rank 0: Define variable path="(null)" name="T"  gdims=150,160  ldims=50,160  offs=0,0
+rank 0: Define variable path="(null)" name="dT"  gdims=150,160  ldims=50,160  offs=0,0
+rank 0: Write variable 0: gndx
+rank 0: Write variable 1: gndy
+rank 0: Write variable 2: /info/nproc
+rank 0: Write variable 3: /info/npx
+rank 0: Write variable 4: /info/npy
+rank 0: Write variable 5: offx
+rank 0: Write variable 6: offy
+rank 0: Write variable 7: ndx
+rank 0: Write variable 8: ndy
+rank 0: Write variable 9: step
+rank 0: Write variable 10: iterations
+rank 0: Write variable 11: T
+rank 2: Write variable 11: T
+rank 1: Write variable 11: T
+rank 0: Write variable 12: dT
+rank 2: Write variable 12: dT
+rank 1: Write variable 12: dT
+Step   6: heat.bp                   0.0000         0.081         0.000
+rank 1: position in 2-D space = 1,0
+rank 1: ldims   in 2-D space = 50,160
+rank 1: offsets in 2-D space = 50,0
+rank 1: position in 2-D space = 1,0
+rank 1: ldims   in 2-D space = 50,160
+rank 1: offsets in 2-D space = 50,0
+rank 1: Define variable path="(null)" name="T"  gdims=150,160  ldims=50,160  offs=50,0
+rank 1: Define variable path="(null)" name="dT"  gdims=150,160  ldims=50,160  offs=50,0
+File info:
+  current step:   5
+  last step:      5
+  # of variables: 13:
+Get info on variable 0: gndx
+    integer    gndx     scalar
+Get info on variable 1: gndy
+    integer    gndy     scalar
+Get info on variable 2: /info/nproc
+    integer    /info/nproc      scalar
+Get info on variable 3: /info/npx
+    integer    /info/npx        scalar
+Get info on variable 4: /info/npy
+    integer    /info/npy        scalar
+Get info on variable 5: offx
+    integer    offx     scalar
+Get info on variable 6: offy
+    integer    offy     scalar
+Get info on variable 7: ndx
+    integer    ndx      scalar
+Get info on variable 8: ndy
+    integer    ndy      scalar
+Get info on variable 9: step
+    integer    step     scalar
+Get info on variable 10: iterations
+    integer    iterations       scalar
+Get info on variable 11: T
+    double     T[150, 160] :
+rank 0: position in 2-D space = 0,0
+rank 0: ldims   in 2-D space = 50,160
+rank 0: offsets in 2-D space = 0,0
+Get info on variable 12: dT
+    double     dT[150, 160] :
+rank 0: position in 2-D space = 0,0
+rank 0: ldims   in 2-D space = 50,160
+rank 0: offsets in 2-D space = 0,0
+Rank 0: allocate 0.0611572 MB for input buffer
+rank 0: Define scalar path="(null)" name="gndx"
+rank 0: Define scalar path="(null)" name="gndy"
+rank 0: Define scalar path="/info" name="nproc"
+rank 0: Define scalar path="/info" name="npx"
+rank 0: Define scalar path="/info" name="npy"
+rank 0: Define scalar path="(null)" name="offx"
+rank 0: Define scalar path="(null)" name="offy"
+rank 0: Define scalar path="(null)" name="ndx"
+rank 0: Define scalar path="(null)" name="ndy"
+rank 0: Define scalar path="(null)" name="step"
+rank 0: Define scalar path="(null)" name="iterations"
+rank 0: Define variable path="(null)" name="T"  gdims=150,160  ldims=50,160  offs=0,0
+rank 0: Define variable path="(null)" name="dT"  gdims=150,160  ldims=50,160  offs=0,0
+rank 2: position in 2-D space = 2,0
+rank 2: ldims   in 2-D space = 50,160
+rank 2: offsets in 2-D space = 100,0
+rank 2: position in 2-D space = 2,0
+rank 2: ldims   in 2-D space = 50,160
+rank 2: offsets in 2-D space = 100,0
+rank 2: Define variable path="(null)" name="T"  gdims=150,160  ldims=50,160  offs=100,0
+rank 2: Define variable path="(null)" name="dT"  gdims=150,160  ldims=50,160  offs=100,0
+rank 0: Write variable 0: gndx
+rank 0: Write variable 1: gndy
+rank 0: Write variable 2: /info/nproc
+rank 0: Write variable 3: /info/npx
+rank 0: Write variable 4: /info/npy
+rank 0: Write variable 5: offx
+rank 0: Write variable 6: offy
+rank 0: Write variable 7: ndx
+rank 0: Write variable 8: ndy
+rank 0: Write variable 9: step
+rank 0: Write variable 10: iterations
+rank 2: Write variable 11: T
+ rank 0: Write variable 11: T
+ rank 1: Write variable 11: T
+ rank 1: Write variable 12: dT
+ rank 2: Write variable 12: dT
+ rank 0: Write variable 12: dT
+ stage_write rank 0 end of stream received
+ Bye after processing 6 steps
+ Rank 0 runtime: 40.370248
+ Rank 0 total runtime =       40.265s
+ swift: received exit code: 0
+ swift: received exit code: 0
++
