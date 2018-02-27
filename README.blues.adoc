@@ -83,7 +83,7 @@ Note: check whether mpicc is correct. It's usually gcc.
  export MPI=/software/mvapich2-gnu-psm-1.9.5/
  export CFLAGS=-I$MPI/include
  export LDFLAGS="-L$MPI/lib -lmpich"
- export MODE=cluster QUEUE=default PROJECT="Workflow"
+ export MODE=cluster QUEUE=default PROJECT="Project_Name"
 +
 ** Build and install
 +
