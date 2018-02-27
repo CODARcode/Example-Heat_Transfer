@@ -65,4 +65,8 @@ Note: check whether mpicc is correct. It's usually gcc.
 ** Create the swift-t installation directory in advance, and specify it in the file dev/build/swift-t-settings.sh, such as "export SWIFT_T_PREFIX=$HOME/software/swift-t". Then,
 +
  dev/build/build-all.sh
+ export SWIFT_T_HOME=$HOME/software/swift-t
+ export PATH=$SWIFT_T_HOME/turbine/bin:$SWIFT_T_HOME/stc/bin:$PATH
 +
+** Check the installation by "swift-t -v", "stc -v", "turbine -v".
+
