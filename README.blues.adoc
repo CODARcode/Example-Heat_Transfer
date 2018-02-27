@@ -34,3 +34,17 @@ How to build ADIOS + FlexPath for Blues.
  perl ./chaos_build.pl
 ----
 +
+
+3. Download/install ADIOS
+
++
+---
+ cd ~/project
+ wget http://users.nccs.gov/~pnorbert/adios-1.11.0.tar.gz
+ tar -zxvf adios-1.11.0.tar.gz
+ cd ~/project/adios-1.11.0/
+ mkdir ~/software/adios
+ export LIBS=-pthread
+ ./configure --prefix=$HOME/software/adios --with-flexpath=$HOME/software/evpath
+---
++
