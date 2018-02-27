@@ -13,14 +13,14 @@ How to build ADIOS + FlexPath for Blues.
 
 2. Download/install EVPATH/FlexPath
 
-Download EVPATH
+** Download EVPATH
 +
  mkdir ~/project
  mkdir ~/project/evpath-build
  cd ~/project/evpath-build
  wget http://www.cc.gatech.edu/systems/projects/EVPath/chaos_bootstrap.pl
 +
-Create the evpath installation directory in advance, and specify it when running "perl ./chaos_bootstrap.pl -i", such as $HOME/software/evpath
+** Create the evpath installation directory in advance, and specify it when running "perl ./chaos_bootstrap.pl -i", such as $HOME/software/evpath
 +
 ----
  mkdir ~/software
@@ -28,7 +28,7 @@ Create the evpath installation directory in advance, and specify it when running
  perl ./chaos_bootstrap.pl -i
 ----
 +
-Edit chaos_build_config to remove the BUILDLIST entries after evpath with a comment (%). Then, build and install EVPATH. EVPath build requires CMake 3.0 or higher.
+** Edit chaos_build_config to remove the BUILDLIST entries after evpath with a comment (%). Then, build and install EVPATH. EVPath build requires CMake 3.0 or higher.
 +
 ----
  perl ./chaos_build.pl
