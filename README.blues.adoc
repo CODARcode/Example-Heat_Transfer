@@ -12,6 +12,7 @@ How to build ADIOS + FlexPath for Blues.
 +
 
 2. Download/install EVPATH/FlexPath
+
 Download EVPATH
 +
  mkdir ~/project
