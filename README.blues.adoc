@@ -83,24 +83,24 @@ Note: check whether mpicc is correct by "mpicc -show". It's usually gcc.
 +
 ** Build and install
 +
- chmod 744 setting.sh
- src/setting.sh
- src/build.sh
+ $ chmod 744 setting.sh
+ $ src/setting.sh
+ $ src/build.sh
 +
 ** Run an example to test.
 +
- cd ~/project/mpix_launch_swift/apps/example
- ./build-linux.sh
- ./run-blues.sh
+ $ cd ~/project/mpix_launch_swift/apps/example
+ $ ./build-linux.sh
+ $ ./run-blues.sh
 +
 
 6. Build the heat_transfer simulator code
 ** Download the heat_transfer simulator code and set the envionmental variable LD_LIBRARY_PATH .
 +
- cd ~/project
- git clone https://github.com/CODARcode/Example-Heat_Transfer.git
- cd ~/project/Example-Heat_Transfer
- export LD_LIBRARY_PATH=$HOME/software/evpath/lib:$LD_LIBRARY_PATH
+ $ cd ~/project
+ $ git clone https://github.com/CODARcode/Example-Heat_Transfer.git
+ $ cd ~/project/Example-Heat_Transfer
+ $ export LD_LIBRARY_PATH=$HOME/software/evpath/lib:$LD_LIBRARY_PATH
 +
 ** Edit the file "~/project/Example-Heat_Transfer/Makefile". Use mpif90 for fortran and comment "-fcheck=bounds"
 +
@@ -111,11 +111,11 @@ Note: check whether mpicc is correct by "mpicc -show". It's usually gcc.
 +
 ** Check whether mpicc is correct by "mpicc -show". It's usually gcc.
 +
- module avail
- module load mvapich2-gnu-psm/1.9
- mpicc -show
- which mpif90
- mpif90 -show
+ $ module avail
+ $ module load mvapich2-gnu-psm/1.9
+ $ mpicc -show
+ $ which mpif90
+ $ mpif90 -show
 +
 ** Edit the file ~/project/Example-Heat_Transfer/build.sh
 +
@@ -139,8 +139,8 @@ Note: check whether mpicc is correct by "mpicc -show". It's usually gcc.
 +
 ** Compile and test stage_write
 +
- make -j
- mpiexec -n 2 stage_write
+ $ make -j
+ $ mpiexec -n 2 stage_write
 +
 ** Note: use "export LD_LIBRARY_PATH=$HOME/software/evpath/lib:$LD_LIBRARY_PATH" instead of "export LD_LIBRARY_PATH=$HOME/software/evpath/lib" to avoid breaking LD_LIBRARY_PATH=/software/mvapich2-gnu-psm-1.9.5/lib.
 
