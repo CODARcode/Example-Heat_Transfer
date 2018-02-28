@@ -4,7 +4,7 @@ How to build for Blues
 +
  $ cmake --version [EVPath build requires CMake 3.0 or higher]
 +
-** Note: Check available cmake versions with "softenv | grep cmake", and add "+cmake-3.5.2" in a new line before "@default" in the file "~/.soft", or use command "soft add +cmake-3.5.2".
+** Note: Check available cmake versions with "softenv | grep cmake", and add "+cmake-3.5.2" in a new line before "@default" in the file "~/.soft", or use the command "soft add +cmake-3.5.2".
 
 2. Download/install EVPATH/FlexPath
 
