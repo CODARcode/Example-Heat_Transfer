@@ -10,42 +10,42 @@ How to build for Blues
 
 ** Download EVPATH
 +
- mkdir ~/project
- mkdir ~/project/evpath-build
- cd ~/project/evpath-build
- wget http://www.cc.gatech.edu/systems/projects/EVPath/chaos_bootstrap.pl
+ $ mkdir ~/project
+ $ mkdir ~/project/evpath-build
+ $ cd ~/project/evpath-build
+ $ wget http://www.cc.gatech.edu/systems/projects/EVPath/chaos_bootstrap.pl
 +
 ** Create the evpath installation directory in advance, and specify it when running "perl ./chaos_bootstrap.pl -i", such as $HOME/software/evpath
 +
 ----
- mkdir ~/software
- mkdir ~/software/evpath
- perl ./chaos_bootstrap.pl -i
+ $ mkdir ~/software
+ $ mkdir ~/software/evpath
+ $ perl ./chaos_bootstrap.pl -i
 ----
 +
 ** Edit chaos_build_config to remove the BUILDLIST entries after evpath with a comment (%). Then, build and install EVPATH. EVPath build requires CMake 3.0 or higher.
 +
 ----
- perl ./chaos_build.pl
+ $ perl ./chaos_build.pl
 ----
 +
 
 3. Download/install ADIOS
 ** Create the ADIOS installation directory in advance, and specify it when running "./configure --prefix=...", such as $HOME/software/adios
 +
- cd ~/project
- wget http://users.nccs.gov/~pnorbert/adios-1.11.0.tar.gz
- tar -zxvf adios-1.11.0.tar.gz
- cd ~/project/adios-1.11.0/
- mkdir ~/software/adios
- export LIBS=-pthread
- ./configure --prefix=$HOME/software/adios --with-flexpath=$HOME/software/evpath
- module load mvapich2-gnu-psm/1.9
- mpicc -show
- make
- make install
- export ADIOS_HOME=$HOME/software/adios
- export PATH=$ADIOS_HOME/bin:$PATH
+ $ cd ~/project
+ $ wget http://users.nccs.gov/~pnorbert/adios-1.11.0.tar.gz
+ $ tar -zxvf adios-1.11.0.tar.gz
+ $ cd ~/project/adios-1.11.0/
+ $ mkdir ~/software/adios
+ $ export LIBS=-pthread
+ $ ./configure --prefix=$HOME/software/adios --with-flexpath=$HOME/software/evpath
+ $ module load mvapich2-gnu-psm/1.9
+ $ mpicc -show
+ $ make
+ $ make install
+ $ export ADIOS_HOME=$HOME/software/adios
+ $ export PATH=$ADIOS_HOME/bin:$PATH
 +
 
 Note: check whether mpicc is correct by "mpicc -show". It's usually gcc.
@@ -53,25 +53,25 @@ Note: check whether mpicc is correct by "mpicc -show". It's usually gcc.
 4. Clone/install Swift/T
 ** Install Java. Then,
 +
- cd ~/project
- git clone https://github.com/swift-lang/swift-t.git
- cd ~/project/swift-t
- dev/build/init-settings.sh
+ $ cd ~/project
+ $ git clone https://github.com/swift-lang/swift-t.git
+ $ cd ~/project/swift-t
+ $ dev/build/init-settings.sh
 +
 ** Create the swift-t installation directory in advance, and specify it in the file dev/build/swift-t-settings.sh, such as "export SWIFT_T_PREFIX=$HOME/software/swift-t". Then,
 +
- dev/build/build-all.sh
- export SWIFT_T_HOME=$HOME/software/swift-t
- export PATH=$SWIFT_T_HOME/turbine/bin:$SWIFT_T_HOME/stc/bin:$PATH
+ $ dev/build/build-all.sh
+ $ export SWIFT_T_HOME=$HOME/software/swift-t
+ $ export PATH=$SWIFT_T_HOME/turbine/bin:$SWIFT_T_HOME/stc/bin:$PATH
 +
 ** Check the installation by "swift-t -v", "stc -v", and "turbine -v".
 
 5. Install the MPIX_Launch module
 ** Download the MPIX_Launch module
 +
- cd ~/project
- git clone https://bitbucket.org/jmjwozniak/mpix_launch_swift.git
- cd ~/project/mpix_launch_swift
+ $ cd ~/project
+ $ git clone https://bitbucket.org/jmjwozniak/mpix_launch_swift.git
+ $ cd ~/project/mpix_launch_swift
 +
 ** Edit src/setting.sh
 +
