@@ -41,13 +41,14 @@ How to build for Blues
  export LIBS=-pthread
  ./configure --prefix=$HOME/software/adios --with-flexpath=$HOME/software/evpath
  module load mvapich2-gnu-psm/1.9
+ mpicc -show
  make
  make install
  export ADIOS_HOME=$HOME/software/adios
  export PATH=$ADIOS_HOME/bin:$PATH
 +
 
-Note: check whether mpicc is correct. It's usually gcc.
+Note: check whether mpicc is correct by "mpicc -show". It's usually gcc.
 
 4. Clone/install Swift/T
 ** Install Java. Then,
@@ -108,7 +109,7 @@ Note: check whether mpicc is correct. It's usually gcc.
  CFLAGS=-g -O3
  FFLAGS=-g -O3 -Wall # -fcheck=bounds -fcheck=array-temps
 +
-** Check whether mpicc is correct. It's usually gcc.
+** Check whether mpicc is correct by "mpicc -show". It's usually gcc.
 +
  module avail
  module load mvapich2-gnu-psm/1.9
