@@ -64,7 +64,7 @@ Note: check whether mpicc is correct by "mpicc -show". It's usually gcc.
  export SWIFT_T_HOME=$HOME/software/swift-t
  export PATH=$SWIFT_T_HOME/turbine/bin:$SWIFT_T_HOME/stc/bin:$PATH
 +
-** Check the installation by "swift-t -v", "stc -v", "turbine -v".
+** Check the installation by "swift-t -v", "stc -v", and "turbine -v".
 
 5. Install the MPIX_Launch module
 ** Download the MPIX_Launch module
