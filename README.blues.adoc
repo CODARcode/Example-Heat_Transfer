@@ -1,26 +1,8 @@
 How to build for Blues
 
-1. check all APT packages
+1. check software versions
 +
- gcc -v
- g++ -v
- gfortran -v
- mpicc -v
- mpiexec --version
- swig -version
- zsh --version
- ant -version
- make -v
- autoconf -V
- bison -V
- flex -V
  cmake --version [EVPath build requires CMake 3.0 or higher]
- svn --version
- git --version
- 
- tclsh
- % info patchlevel
- % exit
 +
 ** Note: Check available cmake versions with "softenv | grep cmake", and add "+cmake-3.5.2" in a new line before "@default" in the file "~/.soft".
 
