@@ -388,8 +388,8 @@ int read_write(int step)
     // open output file
     retval = adios_open (&fh, group_name, outfilename, (step==1 ? "w" : "a"), comm);
     if (retval!=0) return retval;
-    retval = adios_group_size (fh, write_total, &total_size);
-    if (retval!=0) return retval;
+    //retval = adios_group_size (fh, write_total, &total_size);
+    //if (retval!=0) return retval;
 
     for (i=0; i<f->nvars; i++) 
     {
