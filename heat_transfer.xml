@@ -19,7 +19,7 @@
     <var name="ndy"  type="integer"/>
 
     <var name="step"       gwrite="tstep" type="integer"/>
-    <var name="iterations" gwrite="iters" type="integer"/>
+    <var name="checkpoint" gwrite="icheckpoint" type="integer"/>
 
     <!-- 2D array -->
     <global-bounds dimensions="gndx,gndy" 
@@ -43,13 +43,14 @@
 
   </adios-group>
 
-  <method group="heat" method="FLEXPATH">QUEUE_SIZE=4;verbose=3</method>
+  <method group="heat" method="POSIX"/>
 <!--
-  <method group="heat" method="MPI"/>
   <method group="heat" method="MPI_AGGREGATE">num_aggregators=4;num_ost=2;have_metadata_file=1;verbose=3</method>
+  <method group="heat" method="FLEXPATH">QUEUE_SIZE=4;verbose=3</method>
+  <method group="heat" method="MPI"/>
   <method group="heat" method="DATASPACES"/>
 -->
 
-  <buffer max-size-MB="20"/>
+  <!--<buffer max-size-MB="20"/-->
 
 </adios-config>
