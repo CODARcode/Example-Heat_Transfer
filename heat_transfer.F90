@@ -124,7 +124,7 @@ program heat_transfer
     call heatEdges(curr)
 
     do tstep=1,steps
-        !if (rank==0) print '("Step ",i4,":")', tstep
+        if (rank==0) print '("Step ",i4,":")', tstep
 
         call iterate(curr)
         curr = 2/curr  !  flip between 1 and 2, current and next array

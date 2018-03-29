@@ -33,13 +33,9 @@
              type="real*8" dimensions="ndx,ndy" transform="zfp:accuracy=.001"/>
              -->
 
-        <var name="dT"     gwrite="dT(:,:)" 
-             type="real*8" dimensions="ndx,ndy" transform="none"/>
     </global-bounds>
 
     <attribute name="T/description" value="Temperature 2D array with 2D decomposition"/>
-    <attribute name="dT/description" value="delta T"/>
-
 
   </adios-group>
 

@@ -82,6 +82,7 @@ subroutine io_write(tstep,icheckpoint,curr)
     write_time = write_time + write_end_time - write_start_time
 
     io_total_time = io_total_time + io_time
+    adios_totalsize = 8*ndx*ndy
     sz = adios_totalsize * nproc/1024.d0/1024.d0/1024.d0 !size in GB
     gbs = sz/io_time
     if (rank==0) print '("Checkpoint ",i3,": ",a20,f12.4,2x,f12.3,2x,f12.3)', &
