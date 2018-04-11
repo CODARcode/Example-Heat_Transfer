@@ -119,6 +119,10 @@ program heat_transfer
     ! can we set up T to be a sin wave
 
     call init_T()
+    if (rank == 0) then
+        print '("Setup complete. Beginning simulation")'
+    endif
+    call MPI_Barrier(app_comm, ierr)
 
     curr = 1;
     call heatEdges(curr)
