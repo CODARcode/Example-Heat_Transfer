@@ -40,8 +40,8 @@ char   varnames[256];     // ADIOS variable names
 char   transparams[256];  // ADIOS transform params
 enum ADIOS_READ_METHOD read_method;
 
-static const int max_read_buffer_size  = 1024*1024*1024;
-static const int max_write_buffer_size = 1024*1024*1024;
+//static const int max_read_buffer_size  = 1024*1024*1024;
+//static const int max_write_buffer_size = 1024*1024*1024;
 
 static int timeout_sec = 300; // will stop if no data found for this time (-1: never stop)
 
@@ -267,11 +267,11 @@ int process_metadata(int step)
 
     // determine output buffer size and allocate it
     uint64_t bufsize = write_total + f->nvars*128 + f->nattrs*32 + 1024; 
-    if (bufsize > max_write_buffer_size) {
+    /*if (bufsize > max_write_buffer_size) {
         print ("ERROR: rank %d: write buffer size needs to hold about %" PRIu64 " bytes, "
                 "but max is set to %d\n", rank, bufsize, max_write_buffer_size);
         return 1;
-    }
+    }*/
 
     if (step == 1) {
         print0 ("Rank %d: allocate %" PRIu64 " MB for output buffer\n", rank, bufsize/1048576+1);
@@ -279,11 +279,11 @@ int process_metadata(int step)
     }
     // allocate read buffer
     bufsize = largest_block + 128;
-    if (bufsize > max_read_buffer_size) {
+    /*if (bufsize > max_read_buffer_size) {
         print ("ERROR: rank %d: read buffer size needs to hold at least %" PRIu64 " bytes, "
                 "but max is set to %d\n", rank, bufsize, max_read_buffer_size);
         return 1;
-    }
+    }*/
     print0 ("Rank %d: allocate %g MB for input buffer\n", rank, (double)bufsize/1048576.0);
     readbuf = (char *) malloc ((size_t)bufsize);
     if (!readbuf) {
