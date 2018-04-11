@@ -510,40 +510,43 @@ int main (int argc, char ** argv)
             print0 ("  last step:      %d\n", f->last_step);
             print0 ("  # of variables: %d:\n", f->nvars);
 
-            retval = process_metadata(steps);
-            if (retval) break;
+            if (steps == 1) {
+                retval = process_metadata(steps);
+                if (retval) break;
+            }
 
             retval = read_write(steps);
             if (retval) break;
 
             // advance to 1) next available step with 2) blocking wait 
             curr_step = f->current_step; // save for final bye print
-            cleanup_step();
+            //cleanup_step();
             adios_advance_step (f, 0, timeout_sec);
 
             if (adios_errno == err_end_of_stream) 
             {
-                if(rank==0) printf("stage_write rank 0 end of stream received\n");
+                print0("stage_write rank 0 end of stream received\n");
                 break;
             }
             else if (adios_errno == err_step_notready) 
             {
-                print ("rank %d: No new step arrived within the timeout. Quit. %s\n", 
+                print0 ("rank %d: No new step arrived within the timeout. Quit. %s\n", 
                         rank, adios_errmsg());
                 break;
             } 
             else if (f->current_step != curr_step+1) 
             {
                 // we missed some steps
-                print ("rank %d: WARNING: steps %d..%d were missed when advancing.\n", 
+                print0 ("rank %d: WARNING: steps %d..%d were missed when advancing.\n", 
                         rank, curr_step+1, f->current_step-1);
             }
 
         }
 
         adios_read_close (f);
-        if(readbuf) free(readbuf);
-        if(varinfo) free(varinfo);
+        cleanup_step();
+        //if(readbuf) free(readbuf);
+        //if(varinfo) free(varinfo);
         if(group_name) free(group_name);
     } 
     print0 ("Bye after processing %d steps\n", steps);
