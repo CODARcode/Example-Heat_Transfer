@@ -225,11 +225,15 @@ int process_metadata(int step)
                 rank, (uint64_t)(sizeof(VarInfo)*f->nvars));
         return 1;
     }
+    else {
+        print0("Allocated varinfo buffer of size %ld\n", sizeof(VarInfo) * f->nvars);
+    }
 
     write_total = 0;
     largest_block = 0;
 
     // Decompose each variable and calculate output buffer size
+    print0 ("stage_write: process_metadata: num nvars: %d\n", f->nvars);
     for (i=0; i<f->nvars; i++) 
     {
         print0 ("Get info on variable %d: %s\n", i, f->var_namelist[i]); 
@@ -290,6 +294,9 @@ int process_metadata(int step)
         print ("ERROR: rank %d: cannot allocate %" PRIu64 " bytes for read buffer\n",
                 rank, bufsize);
         return 1;
+    }
+    else {
+        print0("Allocated read buffer of size %ld\n", bufsize);
     }
 
     // Select output method
@@ -476,7 +483,7 @@ int main (int argc, char ** argv)
     } 
     else if (adios_errno == err_end_of_stream) 
     {
-        print ("rank %d: Stream terminated before open. %s\n", rank, adios_errmsg());
+        print0 ("rank %d: Stream terminated before open. %s\n", rank, adios_errmsg());
         retval = adios_errno;
     } 
     else if (f == NULL) {
