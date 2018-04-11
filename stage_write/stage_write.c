@@ -551,6 +551,7 @@ int main (int argc, char ** argv)
     adios_read_finalize_method (read_method);
     adios_finalize (rank);
 
+    MPI_Barrier(MPI_COMM_WORLD);
     if (rank == 0) tock = MPI_Wtime();
     print0("Rank 0 runtime: %lf\n", tock-tick);
 
