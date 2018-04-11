@@ -28,8 +28,10 @@ program heat_transfer
     integer :: it    ! current iteration (1..iters)
     integer :: curr  ! 1 or 2:   T(:,:,curr) = T(t) current step  
                      ! the other half of T is the next step T(t+1)
+    integer :: checkpoint_freq
     double precision :: tstart, tend
 
+    ierr = 0
     call MPI_Init (ierr)
     ! World comm spans all applications started with the same aprun command 
     ! on a Cray XK6
@@ -51,6 +53,14 @@ program heat_transfer
     call MPI_Barrier (app_comm, ierr)
 
     call processArgs()
+
+    if (checkpoints .gt. steps) then
+        if (rank == 0) then
+            print '("WARNING: No. of checkpoints is greater than the no. of steps. Resetting num checkpoints to num steps.")'
+        endif
+        checkpoints = steps
+    endif
+    checkpoint_freq = steps/checkpoints
     
     if (rank == 0) then
         print '(" Process number        : ",i0," x ",i0)', npx,npy
@@ -96,15 +106,23 @@ program heat_transfer
 
 
     ! allocate and initialize data array
-    allocate( T(0:ndx+1, 0:ndy+1, 2) )
-    allocate( dT(1:ndx, 1:ndy) )
+    allocate( T(0:ndx+1, 0:ndy+1, 2), stat=ierr )
+    if (ierr .ne. 0) then
+        print *, "FATAL ERROR: Could not allocate T. Exiting."
+        call exit(1)
+    endif
+    !allocate( dT(1:ndx, 1:ndy) )
     T = 0.0
-    dT = 0.0
+    !dT = 0.0
 
 
     ! can we set up T to be a sin wave
 
     call init_T()
+    if (rank == 0) then
+        print '("Setup complete. Beginning simulation")'
+    endif
+    call MPI_Barrier(app_comm, ierr)
 
     curr = 1;
     call heatEdges(curr)
@@ -112,15 +130,14 @@ program heat_transfer
     do tstep=1,steps
         if (rank==0) print '("Step ",i4,":")', tstep
 
-        do it=1,iters
-            call iterate(curr)
-            curr = 2/curr  !  flip between 1 and 2, current and next array
-            call heatEdges(curr)
-            call exchange(curr)
-            !print '("Rank ",i4," done exchange")', rank
-        end do ! iterations
+        call iterate(curr)
+        curr = 2/curr  !  flip between 1 and 2, current and next array
+        call heatEdges(curr)
+        call exchange(curr)
 
-        call io_write(tstep,curr) 
+        if (mod(tstep, checkpoint_freq) .eq. 0) then
+            call io_write(tstep,tstep/checkpoint_freq,curr) 
+        endif
         !print '("Rank ",i4," done write")', rank
 
     end do ! steps
@@ -195,7 +212,7 @@ subroutine iterate(curr)
             T(i,j,next) = omega/4*(T(i-1,j,curr)+T(i+1,j,curr)+ &
                 T(i,j-1,curr)+T(i,j+1,curr)) + &
                 (1.0-omega)*(T(i,j,curr)+r_param)
-            dT(i,j) = T(i,j,next) - T(i,j,curr)
+            !dT(i,j) = T(i,j,next) - T(i,j,curr)
             !if (rank==1) then
             !    print '(i0,",",i0,":(",5f9.3,")")', &
             !    j,i, &
@@ -271,14 +288,14 @@ end subroutine exchange
 
 !!***************************
 subroutine usage()
-    print *, "Usage: heat_transfer  output  N  M   nx  ny   steps iterations"
+    print *, "Usage: heat_transfer  output  N  M   nx  ny   timesteps checkpoints"
     print *, "output: name of output file"
     print *, "N:      number of processes in X dimension"
     print *, "M:      number of processes in Y dimension"
     print *, "nx:     local array size in X dimension per processor"
     print *, "ny:     local array size in Y dimension per processor"
-    print *, "steps:  the total number of steps to output" 
-    print *, "iterations: one step consist of this many iterations"
+    print *, "steps:  total number of time steps in the simulation" 
+    print *, "checkpoints: total no. of steps (checkpoints) to be written."
     print *, "ensenble_float: A parameter we can vary to vary the results"
 end subroutine usage
 
@@ -296,7 +313,7 @@ subroutine processArgs()
 #endif
 
     character(len=256) :: npx_str, npy_str, ndx_str, ndy_str
-    character(len=256) :: steps_str,iters_str, r_str
+    character(len=256) :: steps_str,checkpoints_str, r_str
     integer :: numargs
 
     !! process arguments
@@ -312,16 +329,15 @@ subroutine processArgs()
     call getarg(4, ndx_str)
     call getarg(5, ndy_str)
     call getarg(6, steps_str)
-    call getarg(7, iters_str)
+    call getarg(7, checkpoints_str)
     call getarg(8, r_str)
     read (npx_str,'(i5)') npx
     read (npy_str,'(i5)') npy
     read (ndx_str,'(i6)') ndx
     read (ndy_str,'(i6)') ndy
     read (steps_str,'(i6)') steps
-    read (iters_str,'(i6)') iters
+    read (checkpoints_str,'(i6)') checkpoints
     read (r_str,'(f8.2)') r_param
 
 end subroutine processArgs
-
 

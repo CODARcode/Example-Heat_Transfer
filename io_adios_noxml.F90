@@ -77,8 +77,8 @@ subroutine io_write(tstep,curr)
         call adios_define_var (g, "T", "", adios_double, &
                                ldims, gdims, offs, varid)
 
-        call adios_define_var (g, "dT", "", adios_double, &
-                               ldims, gdims, offs, varid)
+        !call adios_define_var (g, "dT", "", adios_double, &
+        !                       ldims, gdims, offs, varid)
     endif
 
     call MPI_BARRIER(app_comm, adios_err)
@@ -89,7 +89,7 @@ subroutine io_write(tstep,curr)
     call adios_write (adios_handle, "gndx", gndx, adios_err)
     call adios_write (adios_handle, "gndy", gndy, adios_err)
     call adios_write (adios_handle, "T", T(1:ndx,1:ndy,curr), adios_err)
-    call adios_write (adios_handle, "dT", dT, adios_err)
+    !call adios_write (adios_handle, "dT", dT, adios_err)
     call adios_close (adios_handle, adios_err)
     call MPI_BARRIER(app_comm ,adios_err)
     io_end_time = MPI_WTIME()

@@ -15,15 +15,15 @@ module heat_vars
     character(len=256) :: outputfile, inputfile
     integer :: npx, npy    ! # of processors in x-y direction
     integer :: ndx, ndy    ! size of array per processor (without ghost cells)
-    integer :: steps       ! number of steps to write
-    integer :: iters       ! number of iterations between steps
+    integer :: steps       ! number of timesteps in the computation
+    integer :: checkpoints ! number of checkpoints to be taken
 
     integer :: gndx, gndy  ! size of the global array (without ghost cells)
     integer :: offx,offy   ! offsets of local array in the global array
     integer :: posx, posy  ! position index in the array
 
     real*8, dimension(:,:,:), allocatable :: T    ! data array 
-    real*8, dimension(:,:), allocatable   :: dT   ! data array 
+    !real*8, dimension(:,:), allocatable   :: dT   ! data array 
 
     ! MPI COMM_WORLD is for all codes started up at once on Cray XK6 
     integer :: wrank, wnproc

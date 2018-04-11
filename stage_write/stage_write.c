@@ -40,8 +40,8 @@ char   varnames[256];     // ADIOS variable names
 char   transparams[256];  // ADIOS transform params
 enum ADIOS_READ_METHOD read_method;
 
-static const int max_read_buffer_size  = 1024*1024*1024;
-static const int max_write_buffer_size = 1024*1024*1024;
+//static const int max_read_buffer_size  = 1024*1024*1024;
+//static const int max_write_buffer_size = 1024*1024*1024;
 
 static int timeout_sec = 300; // will stop if no data found for this time (-1: never stop)
 
@@ -225,11 +225,15 @@ int process_metadata(int step)
                 rank, (uint64_t)(sizeof(VarInfo)*f->nvars));
         return 1;
     }
+    else {
+        print0("Allocated varinfo buffer of size %ld\n", sizeof(VarInfo) * f->nvars);
+    }
 
     write_total = 0;
     largest_block = 0;
 
     // Decompose each variable and calculate output buffer size
+    print0 ("stage_write: process_metadata: num nvars: %d\n", f->nvars);
     for (i=0; i<f->nvars; i++) 
     {
         print0 ("Get info on variable %d: %s\n", i, f->var_namelist[i]); 
@@ -267,11 +271,11 @@ int process_metadata(int step)
 
     // determine output buffer size and allocate it
     uint64_t bufsize = write_total + f->nvars*128 + f->nattrs*32 + 1024; 
-    if (bufsize > max_write_buffer_size) {
+    /*if (bufsize > max_write_buffer_size) {
         print ("ERROR: rank %d: write buffer size needs to hold about %" PRIu64 " bytes, "
                 "but max is set to %d\n", rank, bufsize, max_write_buffer_size);
         return 1;
-    }
+    }*/
 
     if (step == 1) {
         print0 ("Rank %d: allocate %" PRIu64 " MB for output buffer\n", rank, bufsize/1048576+1);
@@ -279,17 +283,20 @@ int process_metadata(int step)
     }
     // allocate read buffer
     bufsize = largest_block + 128;
-    if (bufsize > max_read_buffer_size) {
+    /*if (bufsize > max_read_buffer_size) {
         print ("ERROR: rank %d: read buffer size needs to hold at least %" PRIu64 " bytes, "
                 "but max is set to %d\n", rank, bufsize, max_read_buffer_size);
         return 1;
-    }
+    }*/
     print0 ("Rank %d: allocate %g MB for input buffer\n", rank, (double)bufsize/1048576.0);
     readbuf = (char *) malloc ((size_t)bufsize);
     if (!readbuf) {
         print ("ERROR: rank %d: cannot allocate %" PRIu64 " bytes for read buffer\n",
                 rank, bufsize);
         return 1;
+    }
+    else {
+        print0("Allocated read buffer of size %ld\n", bufsize);
     }
 
     // Select output method
@@ -456,11 +463,14 @@ int main (int argc, char ** argv)
     print0("Variable to transform   = \"%s\"\n", varnames);
     print0("Transform parameters    = \"%s\"\n", transparams);
 
+    MPI_Barrier(MPI_COMM_WORLD);
     tick = MPI_Wtime();
     err = adios_read_init_method(read_method, comm, rmethodparams);
 
-    if (!err) {
-        print0 ("%s\n", adios_errmsg());
+    if (err != 0) {
+        print0 ("adios_read_init_method failed with code %d: %s\n", err, adios_errmsg());
+        MPI_Finalize();
+        return -1;
     }
 
     adios_init_noxml(comm);
@@ -476,7 +486,7 @@ int main (int argc, char ** argv)
     } 
     else if (adios_errno == err_end_of_stream) 
     {
-        print ("rank %d: Stream terminated before open. %s\n", rank, adios_errmsg());
+        print0 ("rank %d: Stream terminated before open. %s\n", rank, adios_errmsg());
         retval = adios_errno;
     } 
     else if (f == NULL) {
@@ -500,40 +510,43 @@ int main (int argc, char ** argv)
             print0 ("  last step:      %d\n", f->last_step);
             print0 ("  # of variables: %d:\n", f->nvars);
 
-            retval = process_metadata(steps);
-            if (retval) break;
+            if (steps == 1) {
+                retval = process_metadata(steps);
+                if (retval) break;
+            }
 
             retval = read_write(steps);
             if (retval) break;
 
             // advance to 1) next available step with 2) blocking wait 
             curr_step = f->current_step; // save for final bye print
-            cleanup_step();
+            //cleanup_step();
             adios_advance_step (f, 0, timeout_sec);
 
             if (adios_errno == err_end_of_stream) 
             {
-                if(rank==0) printf("stage_write rank 0 end of stream received\n");
+                print0("stage_write rank 0 end of stream received\n");
                 break;
             }
             else if (adios_errno == err_step_notready) 
             {
-                print ("rank %d: No new step arrived within the timeout. Quit. %s\n", 
+                print0 ("rank %d: No new step arrived within the timeout. Quit. %s\n", 
                         rank, adios_errmsg());
                 break;
             } 
             else if (f->current_step != curr_step+1) 
             {
                 // we missed some steps
-                print ("rank %d: WARNING: steps %d..%d were missed when advancing.\n", 
+                print0 ("rank %d: WARNING: steps %d..%d were missed when advancing.\n", 
                         rank, curr_step+1, f->current_step-1);
             }
 
         }
 
         adios_read_close (f);
-        if(readbuf) free(readbuf);
-        if(varinfo) free(varinfo);
+        cleanup_step();
+        //if(readbuf) free(readbuf);
+        //if(varinfo) free(varinfo);
         if(group_name) free(group_name);
     } 
     print0 ("Bye after processing %d steps\n", steps);
@@ -541,6 +554,7 @@ int main (int argc, char ** argv)
     adios_read_finalize_method (read_method);
     adios_finalize (rank);
 
+    MPI_Barrier(MPI_COMM_WORLD);
     if (rank == 0) tock = MPI_Wtime();
     print0("Rank 0 runtime: %lf\n", tock-tick);
 
