@@ -463,6 +463,7 @@ int main (int argc, char ** argv)
     print0("Variable to transform   = \"%s\"\n", varnames);
     print0("Transform parameters    = \"%s\"\n", transparams);
 
+    MPI_Barrier(MPI_COMM_WORLD);
     tick = MPI_Wtime();
     err = adios_read_init_method(read_method, comm, rmethodparams);
 
