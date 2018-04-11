@@ -50,14 +50,14 @@ phdf5: heat_vars.o io_phdf5.o heat_transfer.o
 	libtool --mode=link --tag=FC ${FC} ${FFLAGS} -o heat_transfer_phdf5 $^ ${PHDF5_FLIB} 
 
 adios1: heat_vars.o io_adios_gpp.o heat_transfer.o
-	${FC} $(shell tau_cc.sh -tau:showlibs) $(shell ${ADIOS_DIR}/bin/adios_config -l -f) ${FFLAGS} -o heat_transfer_adios1_tau $^
+	${FC} ${FFLAGS} -o heat_transfer_adios1_tau $^ $(shell tau_cc.sh -tau:showsharedlibs) $(shell ${ADIOS_DIR}/bin/adios_config -l -f)
 	# ${FC} ${FFLAGS} -o heat_transfer_adios1 $^ ${ADIOS_FLIB} 
 
 adios2_tau: heat_vars.o io_adios.o heat_transfer.o
 	@echo "tau options"
-	@echo $(shell tau_cc.sh -tau:showlibs)
+	@echo $(shell tau_cc.sh -tau:showsharedlibs)
 	@echo "end tau options"
-	${FC} ${FFLAGS} -o heat_transfer_adios2_tau $^ $(shell tau_cc.sh -tau:showlibs) $(shell ${ADIOS_DIR}/bin/adios_config -l -f)
+	${FC} ${FFLAGS} -o heat_transfer_adios2_tau $^ $(shell tau_cc.sh -tau:showsharedlibs) $(shell ${ADIOS_DIR}/bin/adios_config -l -f)
 	@echo Done building
 
 noxml: heat_vars.o io_adios_noxml.o heat_transfer.o

@@ -1,7 +1,7 @@
 CC=cc
 #CC=tau_cc.sh
 FC=ftn
-CFLAGS=-g -O3
+CFLAGS+=-g -O3
 FFLAGS=-g -Wall -fcheck=bounds #-fcheck=array-temps
 
 ## ADIOS_DIR/bin should in PATH env
@@ -18,7 +18,7 @@ OBJS = utils.o decompose_block.o
 
 stage_write_tau: ${OBJS} stage_write.o
 	@echo "Linking with Tau"
-	${CC} ${LDFLAGS} -o stage_write_tau ${OBJS} ${ADIOS_CLIB} stage_write.o $(shell tau_cc.sh -tau:showlibs) $(shell ${ADIOS_DIR}/bin/adios_config -l)
+	${CC} ${LDFLAGS} -o stage_write_tau ${OBJS} stage_write.o $(shell tau_cc.sh -tau:showsharedlibs) $(shell ${ADIOS_DIR}/bin/adios_config -l)
 	@echo "Done"
 
 test_decompose: ${OBJS} test_decompose.o 
