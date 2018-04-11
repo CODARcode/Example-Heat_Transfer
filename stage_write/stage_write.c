@@ -467,8 +467,10 @@ int main (int argc, char ** argv)
     tick = MPI_Wtime();
     err = adios_read_init_method(read_method, comm, rmethodparams);
 
-    if (!err) {
-        print0 ("%s\n", adios_errmsg());
+    if (err != 0) {
+        print0 ("adios_read_init_method failed with code %d: %s\n", err, adios_errmsg());
+        MPI_Finalize();
+        return -1;
     }
 
     adios_init_noxml(comm);
