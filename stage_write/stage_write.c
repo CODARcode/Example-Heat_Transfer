@@ -543,11 +543,12 @@ int main (int argc, char ** argv)
 
         }
 
+        MPI_Barrier(MPI_COMM_WORLD);
         adios_read_close (f);
-        cleanup_step();
+        //cleanup_step();
         //if(readbuf) free(readbuf);
         //if(varinfo) free(varinfo);
-        if(group_name) free(group_name);
+        //if(group_name) free(group_name);
     } 
     print0 ("Bye after processing %d steps\n", steps);
 
