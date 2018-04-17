@@ -62,11 +62,12 @@ program heat_transfer
     endif
 
     if (checkpoints .eq. 0) then
-        checkpoint_freq = steps + 1  ! so that the mod function in the step loop is always false
-    else
-        checkpoint_freq = steps/checkpoints
+        if (rank == 0) print *, "No. of checkpoints cannot be 0. Exiting .. "
+        call exit(-1)
     endif
-    
+
+    checkpoint_freq = steps/checkpoints
+
     if (rank == 0) then
         print '(" Process number        : ",i0," x ",i0)', npx,npy
         print '(" Array size per process at first step: ",i0," x ",i0)', ndx,ndy
