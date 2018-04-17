@@ -60,7 +60,12 @@ program heat_transfer
         endif
         checkpoints = steps
     endif
-    checkpoint_freq = steps/checkpoints
+
+    if (checkpoints .eq. 0) then
+        checkpoint_freq = steps + 1  ! so that the mod function in the step loop is always false
+    else
+        checkpoint_freq = steps/checkpoints
+    endif
     
     if (rank == 0) then
         print '(" Process number        : ",i0," x ",i0)', npx,npy
