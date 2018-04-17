@@ -559,7 +559,8 @@ int main (int argc, char ** argv)
 
     MPI_Barrier(MPI_COMM_WORLD);
     if (rank == 0) tock = MPI_Wtime();
-    print0("Rank 0 runtime: %lf, io_time: %lf\n", tock-tick, io_time);
+    print0("Rank 0 runtime: %lf\n", tock-tick);
+    print0("Rank 0 io_time: %lf\n", io_time);
 
     MPI_Finalize();
     return retval;
