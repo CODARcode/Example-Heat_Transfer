@@ -518,7 +518,9 @@ int main (int argc, char ** argv)
             t1 = MPI_Wtime();
             retval = read_write(steps);
             if (retval) break;
-            io_time = io_time + MPI_Wtime() - t1;
+            t2 = MPI_Wtime();
+            io_time = io_time + t2 - t1;
+            print0 ("step io time: %lf\n", t2-t1);
 
             // advance to 1) next available step with 2) blocking wait 
             curr_step = f->current_step; // save for final bye print
