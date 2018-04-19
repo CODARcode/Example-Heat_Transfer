@@ -54,7 +54,11 @@ subroutine io_write(tstep,icheckpoint,curr)
 
     call MPI_BARRIER(app_comm, adios_err)
     io_start_time = MPI_WTIME()
-    call adios_open (adios_handle, "heat", filename, mode, app_comm, adios_err)
+    if (tstep .eq. steps) then
+        call adios_open (adios_handle, "heat_final", "heat_final.bp"//char(0), "w"//char(0), app_comm, adios_err)
+    else
+        call adios_open (adios_handle, "heat", filename, mode, app_comm, adios_err)
+    endif
     !adios_groupsize = 11*4 + 2*8*ndx*ndy 
     !call adios_group_size (adios_handle, adios_groupsize, adios_totalsize, adios_err)
     call adios_write (adios_handle, "gndx", gndx, adios_err)
@@ -85,8 +89,13 @@ subroutine io_write(tstep,icheckpoint,curr)
     adios_totalsize = 8*ndx*ndy
     sz = adios_totalsize * nproc/1024.d0/1024.d0/1024.d0 !size in GB
     gbs = sz/io_time
-    if (rank==0) print '("Checkpoint ",i3,": ",a20,f12.4,2x,f12.3,2x,f12.3)', &
-        icheckpoint,filename,sz,io_time,gbs
+    if (rank==0) then
+        if (tstep .eq. steps) then
+            print '("Final: ",a20,f12.4,2x,f12.3,2x,f12.3)', filename,sz,io_time,gbs
+        else
+            print '("Checkpoint ",i3,": ",a20,f12.4,2x,f12.3,2x,f12.3)', icheckpoint,filename,sz,io_time,gbs
+        endif
+    endif
 end subroutine io_write
 
 end module heat_io

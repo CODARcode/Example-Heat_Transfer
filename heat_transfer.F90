@@ -28,7 +28,7 @@ program heat_transfer
     integer :: it    ! current iteration (1..iters)
     integer :: curr  ! 1 or 2:   T(:,:,curr) = T(t) current step  
                      ! the other half of T is the next step T(t+1)
-    integer :: checkpoint_freq
+    integer :: checkpoint_freq, icheckpoint
     double precision :: tstart, tend
 
     ierr = 0
@@ -66,7 +66,7 @@ program heat_transfer
         call exit(-1)
     endif
 
-    checkpoint_freq = steps/checkpoints
+    checkpoint_freq = steps/(checkpoints+1) ! +1 so that you have checkpoints+1 output steps, the last step being the final non-compressed data
 
     if (rank == 0) then
         print '(" Process number        : ",i0," x ",i0)', npx,npy
@@ -133,6 +133,7 @@ program heat_transfer
     curr = 1;
     call heatEdges(curr)
 
+    icheckpoint = 0
     do tstep=1,steps
         if (rank==0) print '("Step ",i4,":")', tstep
 
@@ -142,12 +143,13 @@ program heat_transfer
         call exchange(curr)
 
         if (mod(tstep, checkpoint_freq) .eq. 0) then
-            call io_write(tstep,tstep/checkpoint_freq,curr) 
+            if (icheckpoint .lt. checkpoints) then
+                call io_write(tstep,tstep/checkpoint_freq,curr) 
+                icheckpoint = icheckpoint + 1
+            endif
         endif
-        !print '("Rank ",i4," done write")', rank
-
     end do ! steps
-
+    call io_write(steps,steps/checkpoint_freq,curr) 
 
     ! Terminate
     deallocate (T)
