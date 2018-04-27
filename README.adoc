@@ -1,5 +1,5 @@
 
-=THIS README IS OUT OF DATE.
+= THIS README IS OUT OF DATE.
 Running the Heat Transfer/Reduction pipeline with Swift
 
 
