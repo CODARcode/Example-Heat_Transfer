@@ -6,6 +6,8 @@ This lead syntax does not work with the asciidoc command line tool
 ////
 
 [.lead]
+THIS README IS OUT OF DATE. CONTACT KSHITIJ MEHTA OR BRYCE ALLEN TO KNOW MORE ABOUT THE APPLICATION.
+
 This example shows how to run the heat transfer/reduction pipeline with Swift. This application works as shown in the figure, with the grey callouts indicating user-controlled options for the program.
 
 image::CODAR-fig.jpg[]
