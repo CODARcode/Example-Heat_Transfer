@@ -18,7 +18,7 @@ OBJS = utils.o decompose_block.o
 
 stage_write_tau: ${OBJS} stage_write.o
 	@echo "Linking with Tau"
-	${CC} ${LDFLAGS} -o stage_write_tau ${OBJS} stage_write.o $(shell tau_cc.sh -tau:showsharedlibs) $(shell ${ADIOS_DIR}/bin/adios_config -l)
+	${CC} ${LDFLAGS} -o stage_write_tau ${OBJS} stage_write.o $(shell tau_cc.sh -tau:showsharedlibs) $(shell adios_config -l)
 	@echo "Done"
 
 test_decompose: ${OBJS} test_decompose.o 
