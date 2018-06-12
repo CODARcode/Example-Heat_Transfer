@@ -61,12 +61,8 @@ program heat_transfer
         checkpoints = steps
     endif
 
-    if (checkpoints .eq. 0) then
-        if (rank == 0) print *, "No. of checkpoints cannot be 0. Exiting .. "
-        call exit(-1)
-    endif
-
     checkpoint_freq = steps/(checkpoints+1) ! +1 so that you have checkpoints+1 output steps, the last step being the final non-compressed data
+    if (checkpoint_freq .eq. 0) checkpoint_freq = 1
 
     if (rank == 0) then
         print '(" Process number        : ",i0," x ",i0)', npx,npy
