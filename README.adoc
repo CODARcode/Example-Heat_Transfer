@@ -123,6 +123,17 @@ Instructions on how to run with Cheetah are https://github.com/CODARcode/cheetah
 These notes are for developers that want to work from git clones, not Spack.
 
 . Install all APT packages in the <<user-content-installation,Installation>> section above (or equivalent on your OS)
++
+----
+$ sudo apt-get update
+$ sudo apt-get -y install gcc g++ gfortran mpich
+$ sudo apt-get -y install tcl tcl-dev swig zsh ant
+$ sudo apt-get -y install build-essential autoconf
+$ sudo apt-get -y install libxml2 libxml2-dev gsoap
+$ sudo apt-get -y install bison flex
+$ sudo apt-get -y install cmake subversion git
+----
++
 . Download/install EVPATH/FlexPath +
 Directions here: https://www.cc.gatech.edu/systems/projects/EVPath
 +
@@ -130,9 +141,10 @@ Directions here: https://www.cc.gatech.edu/systems/projects/EVPath
 $ mkdir evpath-build
 $ cd evpath-build
 $ wget http://www.cc.gatech.edu/systems/projects/EVPath/chaos_bootstrap.pl
-$ ./chaos_bootstrap.pl -i
+$ perl ./chaos_bootstrap.pl -i
 ----
 +
+** Create the evpath installation directory in advance, and specify it when running "perl ./chaos_bootstrap.pl -i"
 ** Now edit chaos_build_config to remove the BUILDLIST entries after
    evpath with a comment (%). Then:
 +
@@ -146,6 +158,7 @@ NOTE: nnti will fail, that is OK.
 +
 ----
 $ wget http://users.nccs.gov/~pnorbert/adios-1.11.0.tar.gz
+$ export LIBS=-pthread
 $ ./configure --prefix=... --with-flexpath=...
 ----
 +
@@ -165,6 +178,8 @@ Follow directions here:
 +
 Then put the STC and Turbine bin/ directories in your PATH
 +
+A certain memory size is required. (16 GB is enough; 1 GB cannot work.)
++
 . Install the MPIX_Launch module: +
 Follow directions here:
 +
@@ -172,14 +187,15 @@ Follow directions here:
 . Build the heat_transfer simulator code:
 +
 ----
-make
+$ export LD_LIBRARY_PATH=.../evpath/lib (the library of the EVPath installation)
+$ make
 ----
 . Build the stage_write program
 +
 ----
-cd stage_write
-make
-cd -
+$ cd stage_write
+$ make
+$ cd -
 ----
 . Edit run-workflow.sh
 +
@@ -191,8 +207,12 @@ cd -
 *** This is needed so that the ADIOS-linked programs can find EVPath
     at run time
 . Run ./run-workflow.sh +
-It should take 20 seconds or less, if it hangs,
-kill it and check for error messages.
++
+----
+$ ./run-workflow.sh 16 FLEXPATH
+----
++
+It should take 20 seconds or less, if it hangs, kill it and check for error messages.
 
 === DataSpaces:
 
@@ -212,3 +232,8 @@ for each of them do: 'make clean ; make' (because ADIOS was rebuilt)
 . Edit heat_transfer.xml to enable method="DATASPACES" and disable
 the other methods.
 . Run ./run-workflow.sh + but provide more processes
++
+----
+$ ./run-workflow.sh 17 DATASPACES
+----
++
