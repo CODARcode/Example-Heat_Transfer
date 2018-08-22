@@ -64,6 +64,10 @@ program heat_transfer
     checkpoint_freq = steps/(checkpoints+1) ! +1 so that you have checkpoints+1 output steps, the last step being the final non-compressed data
     if (checkpoint_freq .eq. 0) checkpoint_freq = 1
 
+    ! determine local size
+    ndx = gndx/npx
+    ndy = gndy/npy
+
     if (rank == 0) then
         print '(" Process number        : ",i0," x ",i0)', npx,npy
         print '(" Array size per process at first step: ",i0," x ",i0)', ndx,ndy
@@ -73,10 +77,6 @@ program heat_transfer
             call exit(1)
         endif
     endif
-
-    ! determine local size
-    ndx = gndx
-    ndy = gndy/nproc
 
     ! determine offsets
     posx = mod(rank, npx)     ! 1st dim easy: 0, npx, 2npx... are in the same X position

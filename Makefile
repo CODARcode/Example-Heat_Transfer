@@ -65,9 +65,6 @@ noxml: heat_vars.o io_adios_noxml.o heat_transfer.o
 
 clean:
 	rm -f *.o *.mod *.fh core.*
-	rm -f heat_transfer_fort 
-	rm -f heat_transfer_adios1 heat_transfer_adios2  heat_transfer_noxml heat_transfer_strong_scaling
-	rm -f heat_transfer_hdf5_a heat_transfer_hdf5_b heat_transfer_phdf5
 
 distclean: clean
 	rm -f fort.* 
